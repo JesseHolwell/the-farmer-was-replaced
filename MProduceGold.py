@@ -70,4 +70,4 @@ def produceGoldAsync():
 	initMaze()
 	search(None)
 	
-produceGoldAsync()
+#produceGoldAsync()

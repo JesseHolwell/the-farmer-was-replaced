@@ -32,6 +32,8 @@ def produceColumn(x, focusItem, isTreeFocus):
 		goto(x, y)
 		if get_entity_type() != None:
 			while get_entity_type() != None and not can_harvest():
+				if (get_water() < 0.75):
+					use_item(Items.Water)
 				do_a_flip()
 		harvest()
 
@@ -50,6 +52,7 @@ def producePolycultureAsync(focusItem):
 				drones.append(spawned)
 			else:
 				produceColumn(x, focusItem, isTreeFocus)
+				spawned = True
 		
 	for drone in drones:
 		wait_for(drone)
