@@ -1,3 +1,5 @@
+from Movement import *
+
 def executeTaskByWorldIndex(function):
 	drones = []
 	
@@ -15,6 +17,7 @@ def executeAndDoTaskByWorldIndex(function):
 	drones = []
 	
 	for i in range(get_world_size()):
+		goto(i, 0)
 		spawned = False
 		while not spawned:
 			spawned = spawn_drone(function, i)	

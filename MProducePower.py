@@ -1,4 +1,5 @@
 from Movement import *
+from MovementAsync import *
 from SmartPlanting import *
 from Multithreading import *
 
@@ -33,7 +34,7 @@ def producePowerAsync():
 		index = 22 - i		
 		executeAndDoTaskByWorldIndex(harvestPowerColumnTask(index))
 
-#producePower()
+#producePowerAsync()
 	
 				
 	

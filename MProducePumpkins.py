@@ -1,4 +1,5 @@
 from Movement import *
+from MovementAsync import *
 from Multithreading import *
 
 def producePumpkinColumn(x):

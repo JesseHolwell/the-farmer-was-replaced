@@ -1,5 +1,3 @@
-from Multithreading import *
-
 directions = [North, East, South, West]
 
 deltaX = {East:1, West:-1, North:0, South:0}
@@ -80,14 +78,7 @@ def tillField():
 			if get_ground_type() != Grounds.Soil:
 				till()
 				
-def tillFieldAsync():
-	def tillColumn(x):
-		for y in range(get_world_size()):
-			goto(x, y)
-			if get_ground_type() == Grounds.Grassland:
-				till()
-		
-	executeAndDoTaskByWorldIndex(tillColumn)
+
 
 def convertCoordsToLinear(x, y):
 	return x + y * get_world_size()

@@ -1,4 +1,5 @@
 from Movement import *
+from MovementAsync import *
 from SmartPlanting import *
 from Multithreading import *
 from Statistics import *

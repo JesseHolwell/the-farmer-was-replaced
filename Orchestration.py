@@ -2,8 +2,8 @@ from MProducePumpkins import *
 from MProducePolyculture import *
 from MProducePower import *
 from MProduceCactus import *
-from MProduceGold2 import *
-from ProduceBone import *
+from MProduceGold import *
+from MProduceBone import *
 from ProduceWeird import *
 
 weights = {
