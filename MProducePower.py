@@ -24,7 +24,7 @@ def harvestPowerColumnTask(index):
 		harvestPowerColumn(x, index)
 	return f
 	
-def producePower():
+def producePowerAsync():
 	resetPosition()
 	
 	executeTaskByWorldIndex(producePowerColumn)

@@ -1,5 +1,10 @@
 from Multithreading import *
 
+directions = [North, East, South, West]
+
+deltaX = {East:1, West:-1, North:0, South:0}
+deltaY = {North:1, South:-1, East:0, West:0}
+
 def goto(x, y):
 
 	currentX = get_pos_x()

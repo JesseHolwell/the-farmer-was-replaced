@@ -50,7 +50,7 @@ def sortCactusRow(y):
 		if not swapped:
 			break
 
-def produceCactus():
+def produceCactusAsync():
 	resetPosition()
 	executeTaskByWorldIndex(produceCactusColumnSorted)
 	executeTaskByWorldIndex(sortCactusRow)

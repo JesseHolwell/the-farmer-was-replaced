@@ -2,7 +2,7 @@ from Movement import *
 
 def produceBone():
 	
-	set_world_size(6)
+	set_world_size(12)
 	
 	change_hat(Hats.Wizard_Hat)
 		
@@ -46,4 +46,4 @@ def produceBone():
 	
 	set_world_size(0)
 			
-#produceBone()
+produceBone()

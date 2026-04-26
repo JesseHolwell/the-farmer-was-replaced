@@ -1,8 +1,9 @@
 from Movement import *
 from SmartPlanting import *
 from Multithreading import *
+from Statistics import *
 	
-def plantRecusively(point, item, isTreeFocus, harves):
+def plantRecusively(point, item, isTreeFocus, harvestOrder):
 	x, y = point
 
 	goto(x, y)
@@ -15,21 +16,25 @@ def plantRecusively(point, item, isTreeFocus, harves):
 			
 		plantItem(item)()
 		harvestOrder.append((x, y))
-		nextItem, (x2, y2) = get_companion()
-		plantRecusively((x2, y2), nextItem, isTreeFocus)
-		
-	else:
-		for i in harvestOrder:
-			x, y = i
-			goto(x, y)
-			harvest()
+		companion = get_companion()
+		if companion != None:
+			nextItem, (x2, y2) = companion
+			plantRecusively((x2, y2), nextItem, isTreeFocus, harvestOrder)
 		
 def produceColumn(x, focusItem, isTreeFocus):
 	harvestOrder = []
 	for y in range(get_world_size()):
 		plantRecusively((x, y), focusItem, isTreeFocus, harvestOrder)
+		
+	for i in harvestOrder:
+		x, y = i
+		goto(x, y)
+		if get_entity_type() != None:
+			while not can_harvest():
+				do_a_flip()
+		harvest()
 
-def producePolyculture(focusItem):
+def producePolycultureAsync(focusItem):
 	clear()
 	resetPosition()
 	tillFieldAsync()
@@ -46,7 +51,10 @@ def producePolyculture(focusItem):
 	for drone in drones:
 		wait_for(drone)
 		
-producePolyculture(Entities.Tree)	
+def producePolyTrees():
+	producePolyculture(Entities.Tree)	
+
+#runWithStats(producePolyTrees, Items.Wood)
 
 	
 	

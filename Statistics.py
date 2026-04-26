@@ -1,6 +1,6 @@
 def runWithStats(function, item):
 
-	quick_print("producing: ", item)
+	quick_print("producing: ", item, "with", function)
 	beforeItems = num_items(item)
 	beforeTime = get_time()
 	
@@ -14,6 +14,8 @@ def runWithStats(function, item):
 	
 	quick_print("produced:", producedItems,
 		"in", productionTime)
+		
+	quick_print("ips:", producedItems / productionTime)
 	
 	
 	

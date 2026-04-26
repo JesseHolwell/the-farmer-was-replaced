@@ -1,5 +1,5 @@
 from MProducePumpkins import *
-from ProducePolyculture import *
+from MProducePolyculture import *
 from MProducePower import *
 from MProduceCactus import *
 from MProduceGold import *
@@ -46,26 +46,26 @@ def getLeast():
 	
 	return lowestItem
 	
-def produceHay():
-	producePolyculture(Entities.Grass)
+def produceHayAsync():
+	producePolycultureAsync(Entities.Grass)
 	
-def produceWood():
-	producePolyculture(Entities.Tree)
+def produceWoodAsync():
+	producePolycultureAsync(Entities.Tree)
 	
-def produceCarrots():
-	producePolyculture(Entities.Carrot)
+def produceCarrotsAsync():
+	producePolycultureAsync(Entities.Carrot)
 	
 def produce(item):
 	
 	resources = {
-		Items.Hay:produceHay,
-		Items.Wood:produceWood,
-		Items.Carrot:produceCarrots,
-		Items.Pumpkin:producePumpkins,
+		Items.Hay:produceHayAsync,
+		Items.Wood:produceWoodAsync,
+		Items.Carrot:produceCarrotsAsync,
+		Items.Pumpkin:producePumpkinsAsync,
 		Items.Weird_Substance:produceWeird,
-		Items.Gold:produceGold,
-		Items.Power:producePower,
-		Items.Cactus:produceCactus,
+		Items.Gold:produceGoldAsync,
+		Items.Power:producePowerAsync,
+		Items.Cactus:produceCactusAsync,
 		Items.Bone:produceBone
 	}
 		
