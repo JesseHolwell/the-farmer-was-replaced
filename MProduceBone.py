@@ -3,7 +3,7 @@ from MovementAsync import *
 #from SnakeComplexity import *
 
 def initBone():
-	set_world_size(16)
+	set_world_size(32)
 
 	change_hat(Hats.Wizard_Hat)
 
@@ -254,10 +254,9 @@ def getSafeApplePath(head, apple, body, tailIdx, bodySet, worldSize):
 	return None
 
 
-def produceBone():
-	initBone()
-
-	worldSize = get_world_size()
+# Runs one snake cycle: grows the snake until it reaches `targetLen` or gets
+# stuck. Returns True if it reached `targetLen`, False if it got stuck early.
+def runSnakeCycle(worldSize, targetLen):
 	# Append-only body: head is body[-1], tail is body[tailIdx].
 	# `bodySet` is the set of live body positions, kept in sync for O(1) lookup.
 	startPos = (get_pos_x(), get_pos_y())
@@ -273,6 +272,11 @@ def produceBone():
 	plannedPathIdx = 0
 
 	while True:
+		# Done growing — bail out and let the caller harvest.
+		snakeLen = len(body) - tailIdx
+		if snakeLen >= targetLen:
+			return True
+
 		# Re-plan only when the cached path is exhausted.
 		if plannedPathIdx >= len(plannedPath):
 			head = body[len(body) - 1]
@@ -282,8 +286,7 @@ def produceBone():
 				tail = body[tailIdx]
 				path = findPath(head, tail, bodySet, worldSize)
 				if path == None or len(path) == 0:
-					exit()
-					break
+					return False
 			plannedPath = path
 			plannedPathIdx = 0
 
@@ -293,8 +296,7 @@ def produceBone():
 
 		# Move.
 		if not move(dir):
-			exit()
-			break
+			return False
 
 		newX = get_pos_x()
 		newY = get_pos_y()
@@ -303,8 +305,7 @@ def produceBone():
 		# Pop tail BEFORE appending new head. When the tail is the target of a
 		# tail-follow path of length 1, newHead == removed; appending first
 		# would set bodySet membership and the subsequent .remove(removed)
-		# would delete it again, leaving the live cell untracked. Pop-first
-		# avoids the double-write race entirely.
+		# would delete it again, leaving the live cell untracked.
 		if newHead == apple:
 			body.append(newHead)
 			bodySet.add(newHead)
@@ -317,6 +318,28 @@ def produceBone():
 			tailIdx = tailIdx + 1
 			body.append(newHead)
 			bodySet.add(newHead)
+
+
+def produceBone():
+	# Tilling and the world-size change happen once.
+	initBone()
+
+	worldSize = get_world_size()
+	# Empirical sweet spot: ~25% fill maximises bones/min. Bones harvested per
+	# cycle = L²; cycle time grows superlinearly past ~25% fill because A* has
+	# to detour around dense body. Past that, rate drops.
+	targetLen = (worldSize * worldSize) // 4
+
+	# Outer loop: grow snake → harvest bones → respawn. Indefinite.
+	# Soil persists across hat changes, so we don't re-till between cycles.
+	while True:
+		runSnakeCycle(worldSize, targetLen)
+
+		# Harvest: removing the Dinosaur hat drops the entire tail as bones
+		# (n² bones for tail length n, per the wiki).
+		change_hat(Hats.Wizard_Hat)
+		# Respawn a fresh length-1 snake at the drone's current position.
+		change_hat(Hats.Dinosaur_Hat)
 
 
 produceBone()
