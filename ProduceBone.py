@@ -46,4 +46,4 @@ def produceBone():
 	
 	set_world_size(0)
 			
-produceBone()
+#produceBone()

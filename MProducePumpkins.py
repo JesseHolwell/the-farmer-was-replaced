@@ -41,7 +41,7 @@ def producePumpkinColumn(x):
 
 def producePumpkinsAsync():
 	resetPosition()
-	executeTaskByWorldIndex(producePumpkinColumn)
+	executeAndDoTaskByWorldIndex(producePumpkinColumn)
 	harvest()
 			
 #producePumpkins()

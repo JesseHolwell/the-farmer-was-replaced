@@ -27,11 +27,11 @@ def harvestPowerColumnTask(index):
 def producePowerAsync():
 	resetPosition()
 	
-	executeTaskByWorldIndex(producePowerColumn)
+	executeAndDoTaskByWorldIndex(producePowerColumn)
 		
 	for i in range(7, 16):
 		index = 22 - i		
-		executeTaskByWorldIndex(harvestPowerColumnTask(index))
+		executeAndDoTaskByWorldIndex(harvestPowerColumnTask(index))
 
 #producePower()
 	

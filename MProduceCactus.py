@@ -52,8 +52,8 @@ def sortCactusRow(y):
 
 def produceCactusAsync():
 	resetPosition()
-	executeTaskByWorldIndex(produceCactusColumnSorted)
-	executeTaskByWorldIndex(sortCactusRow)
+	executeAndDoTaskByWorldIndex(produceCactusColumnSorted)
+	executeAndDoTaskByWorldIndex(sortCactusRow)
 	harvest()
 			
 #produceCactus()

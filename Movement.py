@@ -58,6 +58,7 @@ def resetPosition():
 	#while (get_pos_y() != 0):
 	#	move(North)
 	goto(0,0)		
+	change_hat(Hats.Gold_Hat)
 		
 def clearField():
 	for i in range(get_world_size()):
@@ -86,7 +87,7 @@ def tillFieldAsync():
 			if get_ground_type() == Grounds.Grassland:
 				till()
 		
-	executeTaskByWorldIndex(tillColumn)
+	executeAndDoTaskByWorldIndex(tillColumn)
 
 def convertCoordsToLinear(x, y):
 	return x + y * get_world_size()

@@ -30,7 +30,7 @@ def produceColumn(x, focusItem, isTreeFocus):
 		x, y = i
 		goto(x, y)
 		if get_entity_type() != None:
-			while not can_harvest():
+			while get_entity_type() != None and not can_harvest():
 				do_a_flip()
 		harvest()
 
@@ -47,12 +47,14 @@ def producePolycultureAsync(focusItem):
 			spawned = spawn_drone(produceColumn, x, focusItem, isTreeFocus)	
 			if spawned:
 				drones.append(spawned)
+			else:
+				produceColumn(x, focusItem, isTreeFocus)
 		
 	for drone in drones:
 		wait_for(drone)
 		
 def producePolyTrees():
-	producePolyculture(Entities.Tree)	
+	producePolycultureAsync(Entities.Tree)	
 
 #runWithStats(producePolyTrees, Items.Wood)
 
