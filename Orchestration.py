@@ -13,7 +13,7 @@ weights = {
 	Items.Pumpkin:100,
 	Items.Weird_Substance:0.01,
 	Items.Gold:10,
-	Items.Power:0.1,
+	Items.Power:0.01,
 	Items.Cactus:100,
 	Items.Bone:10,
 }
