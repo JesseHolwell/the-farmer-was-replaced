@@ -1,3 +1,5 @@
+# Basic Hamiltonian Cycle
+
 from Movement import *
 
 def produceBone():
@@ -46,4 +48,4 @@ def produceBone():
 	
 	set_world_size(0)
 			
-#produceBone()
+produceBone()

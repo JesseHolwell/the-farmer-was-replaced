@@ -3,7 +3,7 @@ from MProducePolyculture import *
 from MProducePower import *
 from MProduceCactus import *
 from MProduceGold import *
-from MProduceBone import *
+from ProduceBone import *
 from ProduceWeird import *
 
 weights = {
