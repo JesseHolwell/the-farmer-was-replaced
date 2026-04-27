@@ -1,10 +1,10 @@
-# Optimised Hamiltonian Cycle
+# Optimised Hamiltonian Cycle With Only X optimisations
 
 from Movement import *
 from MovementAsync import *
 
 def initBone():
-	set_world_size(8)
+	set_world_size(6)
 
 	change_hat(Hats.Wizard_Hat)
 	if can_harvest():
@@ -22,15 +22,129 @@ tarX = 0
 tarY = 0
 tailLength = 0
 
+def buildHamiltonianCycle(worldSize):
+	path = []
+
+	path.append((0, 0))
+
+	for x in range(1, worldSize - 1):
+		if x % 2 == 1:
+			for y in range(0, worldSize - 1):
+				path.append((x, y))
+		else:
+			for y in range(worldSize - 2, -1, -1):
+				path.append((x, y))
+
+	for y in range(0, worldSize):
+		path.append((worldSize - 1, y))
+
+	for x in range(worldSize - 2, -1, -1):
+		path.append((x, worldSize - 1))
+
+	for y in range(worldSize - 2, 0, -1):
+		path.append((0, y))
+
+	cycleIndex = {}
+	for i in range(len(path)):
+		cycleIndex[path[i]] = i
+
+	return path, cycleIndex
+
+def pathDistance(fromIndex, toIndex, totalTiles):
+	if toIndex >= fromIndex:
+		return toIndex - fromIndex
+	return totalTiles - fromIndex + toIndex
+
+def directionTo(fromX, fromY, toX, toY):
+	if toX > fromX:
+		return East
+	if toX < fromX:
+		return West
+	if toY > fromY:
+		return North
+	if toY < fromY:
+		return South
+	return None
+
+def inBounds(x, y, worldSize):
+	return x >= 0 and x < worldSize and y >= 0 and y < worldSize
+
+def getCycleDirection(path, cycleIndex):
+	currX = get_pos_x()
+	currY = get_pos_y()
+	currIndex = cycleIndex[(currX, currY)]
+	nextIndex = (currIndex + 1) % len(path)
+	nextX, nextY = path[nextIndex]
+	return directionTo(currX, currY, nextX, nextY)
+
+def canTakeCycleShortcut(direction, cycleIndex, totalTiles, worldSize):
+	global tarX
+	global tarY
+	global tailLength
+
+	if not can_move(direction):
+		return False
+
+	currX = get_pos_x()
+	currY = get_pos_y()
+	nextX = currX + deltaX[direction]
+	nextY = currY + deltaY[direction]
+
+	if not inBounds(nextX, nextY, worldSize):
+		return False
+
+	currIndex = cycleIndex[(currX, currY)]
+	nextIndex = cycleIndex[(nextX, nextY)]
+	targetIndex = cycleIndex[(tarX, tarY)]
+
+	stepDistance = pathDistance(currIndex, nextIndex, totalTiles)
+	targetDistance = pathDistance(currIndex, targetIndex, totalTiles)
+
+	# Do not take a shortcut that jumps past the apple we are chasing.
+	if stepDistance > targetDistance:
+		return False
+
+	# tailLength counts tail pieces; add the head for the live snake length.
+	# A shortcut can only jump through currently-free cycle cells. The +1 is
+	# the current tail cell moving away during this step.
+	snakeLength = tailLength + 1
+	distanceToTail = totalTiles - snakeLength + 1
+	return stepDistance <= distanceToTail
+
+def getShortcutDirection(cycleIndex, totalTiles, worldSize):
+	global tarX
+	global tarY
+
+	currX = get_pos_x()
+	currY = get_pos_y()
+
+	if tarX > currX and currY == 0:
+		if canTakeCycleShortcut(East, cycleIndex, totalTiles, worldSize):
+			return East
+
+	if ((tarX < currX or (tarX == currX and tarY == worldSize - 1))
+		and currX % 2 == 1 and currY < worldSize - 1):
+		if canTakeCycleShortcut(North, cycleIndex, totalTiles, worldSize):
+			return North
+
+	return None
+
 def moveAndCheck(dir):
 	global tarX
 	global tarY
 	global tailLength
 
-	move(dir)
+	if not move(dir):
+		return False
+
 	if get_entity_type() == Entities.Apple:
-		tarX, tarY = measure()
 		tailLength += 1
+		nextTarget = measure()
+		if nextTarget == None:
+			return False
+		tarX, tarY = nextTarget
+
+	return True
 
 def produceBoneAsync():
 
@@ -42,73 +156,18 @@ def produceBoneAsync():
 	tarX, tarY = measure()
 	tailLength = 0
 	worldSize = get_world_size()
-	direction = East
+	cyclePath, cycleIndex = buildHamiltonianCycle(worldSize)
+	totalTiles = worldSize * worldSize
 	
 	while True:
-		
-		currX = get_pos_x()
-		currY = get_pos_y()
-			
-		#if (tarX % 2 == 0)
-		# its a south column
-		#else if x % 2 == 1:
-		# its a north column
-		
-		if tarX < currX and (currX % 2 == 1):
-		
-			# If the tail is still occupying the top row at this x,
-			# do not shortcut yet. Just continue the normal path.
-			if not tailLength > worldSize - 1 - currX:
-		
-				while currY != worldSize - 1:
-					moveAndCheck(North)
-					currY = get_pos_y()
-		
-				direction = West
-		
-		if tarX > currX and currY == 0:
-			# if a shortcut wont result in a tail collision
-			# ignore this for the current column
-			if tarX % 2 == 1:
-				stopX = tarX
-			else:
-				stopX = tarX - 1
 
-			# each odd column skipped removes 6 cells from the cycle;
-			# tailLength + skipped must stay below worldSize*worldSize
-			cycleLen = worldSize * worldSize
-			while stopX > 1 and 6 * (stopX - 1) + tailLength >= cycleLen:
-				stopX -= 2
-
-			while currX < stopX:
-				moveAndCheck(East)
-				currX = get_pos_x()
-			moveAndCheck(North)
-			direction = North
-			continue
+		direction = getShortcutDirection(cycleIndex, totalTiles, worldSize)
+		if direction == None:
+			direction = getCycleDirection(cyclePath, cycleIndex)
 			
-		
-		if (get_pos_y() == get_world_size() - 2):
-			moveAndCheck(East)
-			direction = South
-			
-		if (get_pos_y() == 0):
-			moveAndCheck(East)
-			direction = North
-
-		if (get_pos_x() == get_world_size() - 1):
-			moveAndCheck(North)
-			direction = North
-			
-		if (get_pos_y() == get_world_size() - 1):
-			moveAndCheck(West)
-			direction = West
-			
-		if (get_pos_x() == 0):
-			moveAndCheck(South)
-			direction = South
-			
-		moveAndCheck(direction)
+		if not moveAndCheck(direction):
+			change_hat(Hats.Wizard_Hat)
+			break
 		
 		if (not can_move(North) and
 			not can_move(East) and

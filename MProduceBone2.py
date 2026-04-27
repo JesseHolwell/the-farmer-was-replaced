@@ -1,14 +1,14 @@
-# A* search
+# Optimised Hamiltonian Cycle With X/Y optimisations
 
 from Movement import *
 from MovementAsync import *
-#from SnakeComplexity import *
 
 def initBone():
-	set_world_size(32)
+	set_world_size(6)
 
 	change_hat(Hats.Wizard_Hat)
-
+	if can_harvest():
+		harvest()
 	tillFieldAsync()
 	resetPosition()
 
@@ -16,332 +16,179 @@ def initBone():
 
 def exit():
 	change_hat(Hats.Wizard_Hat)
-	#set_world_size(0)
+	set_world_size(0)
+	
+tarX = 0
+tarY = 0
 
-
-def reverseList(lst):
-	out = []
-	n = len(lst)
-	for i in range(n):
-		out.append(lst[n - 1 - i])
-	return out
-
-
-# Try a straight L-shape path (X-first, then Y-first).
-# Body cells block; the target is allowed through so callers don't have to
-# clone the blocked set when tail-following targets the tail.
-# Fast path for open boards — avoids any graph search when the route is direct.
-def tryStraightPath(start, target, blocked, worldSize):
-	sx, sy = start
-	tx, ty = target
-
-	if sx == tx and sy == ty:
-		return []
-
-	stepX = 0
-	if tx > sx:
-		stepX = 1
-	elif tx < sx:
-		stepX = -1
-
-	stepY = 0
-	if ty > sy:
-		stepY = 1
-	elif ty < sy:
-		stepY = -1
-
-	dx = abs(tx - sx)
-	dy = abs(ty - sy)
-
-	# X-first variant.
+def buildHamiltonianCycle(worldSize):
 	path = []
-	cx = sx
-	cy = sy
-	ok = True
-	for i in range(dx):
-		cx = cx + stepX
-		cell = (cx, cy)
-		if cell != target and cell in blocked:
-			ok = False
-			break
-		path.append((stepX, 0))
-	if ok:
-		for i in range(dy):
-			cy = cy + stepY
-			cell = (cx, cy)
-			if cell != target and cell in blocked:
-				ok = False
-				break
-			path.append((0, stepY))
-		if ok:
-			return path
 
-	# Y-first variant.
-	path = []
-	cx = sx
-	cy = sy
-	ok = True
-	for i in range(dy):
-		cy = cy + stepY
-		cell = (cx, cy)
-		if cell != target and cell in blocked:
-			ok = False
-			break
-		path.append((0, stepY))
-	if ok:
-		for i in range(dx):
-			cx = cx + stepX
-			cell = (cx, cy)
-			if cell != target and cell in blocked:
-				ok = False
-				break
-			path.append((stepX, 0))
-		if ok:
-			return path
+	path.append((0, 0))
 
-	return None
+	for x in range(1, worldSize - 1):
+		if x % 2 == 1:
+			for y in range(0, worldSize - 1):
+				path.append((x, y))
+		else:
+			for y in range(worldSize - 2, -1, -1):
+				path.append((x, y))
 
+	for y in range(0, worldSize):
+		path.append((worldSize - 1, y))
 
-# A* with Manhattan heuristic. Body cells block; target is allowed through.
-# Manhattan is consistent on a unit-cost grid, so each cell only needs to be
-# discovered once. Linear-scan priority queue (no heap available).
-def astar(start, target, blocked, worldSize):
-	if start == target:
-		return []
+	for x in range(worldSize - 2, -1, -1):
+		path.append((x, worldSize - 1))
 
-	openList = [start]
-	seen = set()
-	seen.add(start)
-	gScore = {}
-	gScore[start] = 0
-	fScore = {}
-	fScore[start] = abs(start[0] - target[0]) + abs(start[1] - target[1])
-	parent = {}
+	for y in range(worldSize - 2, 0, -1):
+		path.append((0, y))
 
-	while len(openList) > 0:
-		# Linear scan for the min-f cell in the open list.
-		minIdx = 0
-		minF = fScore[openList[0]]
-		n = len(openList)
-		for i in range(1, n):
-			f = fScore[openList[i]]
-			if f < minF:
-				minF = f
-				minIdx = i
+	cycleIndex = {}
+	for i in range(len(path)):
+		cycleIndex[path[i]] = i
 
-		cur = openList[minIdx]
+	return path, cycleIndex
 
-		if cur == target:
-			path = []
-			node = cur
-			while node != start:
-				p = parent[node]
-				path.append((node[0] - p[0], node[1] - p[1]))
-				node = p
-			return reverseList(path)
+def pathDistance(fromIndex, toIndex, totalTiles):
+	if toIndex >= fromIndex:
+		return toIndex - fromIndex
+	return totalTiles - fromIndex + toIndex
 
-		# Swap-and-pop to remove the min-f cell in O(1).
-		last = len(openList) - 1
-		openList[minIdx] = openList[last]
-		openList.pop()
+def inBounds(x, y, worldSize):
+	return x >= 0 and x < worldSize and y >= 0 and y < worldSize
 
-		gCur = gScore[cur]
-		x, y = cur
+def getSafeMoveDistance(direction, cycleIndex, totalTiles, worldSize, body):
+	global tarX
+	global tarY
 
-		for dir in directions:
-			nx = x + deltaX[dir]
-			ny = y + deltaY[dir]
-
-			if nx < 0 or nx >= worldSize or ny < 0 or ny >= worldSize:
-				continue
-
-			nextPos = (nx, ny)
-
-			if nextPos in seen:
-				continue
-
-			# Body cells block, except the target (so tail-follow can terminate
-			# and the safety check can verify head -> tail reachability).
-			if nextPos != target and nextPos in blocked:
-				continue
-
-			seen.add(nextPos)
-			parent[nextPos] = cur
-			gNext = gCur + 1
-			gScore[nextPos] = gNext
-			fScore[nextPos] = gNext + abs(nx - target[0]) + abs(ny - target[1])
-			openList.append(nextPos)
-
-	return None
-
-
-# Manhattan-first, A* fallback.
-def findPath(start, target, blocked, worldSize):
-	path = tryStraightPath(start, target, blocked, worldSize)
-	if path != None:
-		return path
-	return astar(start, target, blocked, worldSize)
-
-
-def stepToDir(step):
-	dx, dy = step
-
-	if dx == 1:
-		return East
-	if dx == -1:
-		return West
-	if dy == 1:
-		return North
-	return South
-
-
-# Returns a path from head to apple that's safe to commit to, or None.
-# `body` is append-only (oldest first). `tailIdx` indexes the live tail; the
-# live snake is `body[tailIdx : ]` with head at `body[-1]`.
-def getSafeApplePath(head, apple, body, tailIdx, bodySet, worldSize):
-	path = findPath(head, apple, bodySet, worldSize)
-
-	if path == None or len(path) == 0:
+	if not can_move(direction):
 		return None
 
-	snakeLen = len(body) - tailIdx
+	currX = get_pos_x()
+	currY = get_pos_y()
+	nextX = currX + deltaX[direction]
+	nextY = currY + deltaY[direction]
 
-	# Snake too short to trap itself — skip the simulation + second pathfind.
-	if snakeLen < worldSize:
-		return path
+	if not inBounds(nextX, nextY, worldSize):
+		return None
 
-	pathLen = len(path)
+	currIndex = cycleIndex[(currX, currY)]
+	nextIndex = cycleIndex[(nextX, nextY)]
+	targetIndex = cycleIndex[(tarX, tarY)]
+	tailX, tailY = body[0]
+	tailIndex = cycleIndex[(tailX, tailY)]
 
-	# Short hops barely shift the snake — if we were safe before, we still are.
-	if pathLen * 2 < snakeLen:
-		return path
+	stepDistance = pathDistance(currIndex, nextIndex, totalTiles)
+	targetDistance = pathDistance(currIndex, targetIndex, totalTiles)
+	tailDistance = pathDistance(currIndex, tailIndex, totalTiles)
 
-	# Simulate body state after following the path and eating the apple.
-	# Last step grows; earlier steps pop the tail.
+	if tailDistance == 0:
+		tailDistance = totalTiles
 
-	# Walk the path forward to get every cell the head occupies.
-	pathCells = []
-	hx = head[0]
-	hy = head[1]
-	for i in range(pathLen):
-		step = path[i]
-		hx = hx + step[0]
-		hy = hy + step[1]
-		pathCells.append((hx, hy))
+	# Do not take a shortcut that jumps past the apple we are chasing.
+	if stepDistance > targetDistance:
+		return None
 
-	newHead = (hx, hy)
+	# The current tail cell may move away during this step, but anything beyond
+	# it is still occupied snake territory.
+	if stepDistance > tailDistance:
+		return None
 
-	# Build a fresh blocked set for the simulated post-eat snake.
-	#   if P <= snakeLen, some original body remains; new tail is inside it.
-	#   if P >  snakeLen, every original body cell has been popped and the
-	#                     new tail lives inside the path itself.
-	newBlocked = set()
-	if pathLen <= snakeLen:
-		newTailBodyIdx = tailIdx + pathLen - 1
-		bodyEnd = len(body)
-		for i in range(newTailBodyIdx, bodyEnd):
-			newBlocked.add(body[i])
-		for i in range(pathLen):
-			newBlocked.add(pathCells[i])
-		newTail = body[newTailBodyIdx]
-	else:
-		pathTailIdx = pathLen - snakeLen - 1
-		for i in range(pathTailIdx, pathLen):
-			newBlocked.add(pathCells[i])
-		newTail = pathCells[pathTailIdx]
+	return stepDistance
 
-	if findPath(newHead, newTail, newBlocked, worldSize) != None:
-		return path
+def getDirectDirection(cycleIndex, totalTiles, worldSize, body):
+	global tarX
+	global tarY
+
+	currX = get_pos_x()
+	currY = get_pos_y()
+
+	preferredDirections = []
+
+	if tarX > currX:
+		preferredDirections.append(East)
+	elif tarX < currX:
+		preferredDirections.append(West)
+
+	if tarY > currY:
+		preferredDirections.append(North)
+	elif tarY < currY:
+		preferredDirections.append(South)
+
+	for direction in preferredDirections:
+		if getSafeMoveDistance(direction, cycleIndex, totalTiles, worldSize, body) != None:
+			return direction
 
 	return None
 
+def getBestSafeDirection(cycleIndex, totalTiles, worldSize, body):
+	if len(body) < worldSize:
+		direction = getDirectDirection(cycleIndex, totalTiles, worldSize, body)
+		if direction != None:
+			return direction
 
-# Runs one snake cycle: grows the snake until it reaches `targetLen` or gets
-# stuck. Returns True if it reached `targetLen`, False if it got stuck early.
-def runSnakeCycle(worldSize, targetLen):
-	# Append-only body: head is body[-1], tail is body[tailIdx].
-	# `bodySet` is the set of live body positions, kept in sync for O(1) lookup.
-	startPos = (get_pos_x(), get_pos_y())
-	body = [startPos]
-	tailIdx = 0
-	bodySet = set()
-	bodySet.add(startPos)
-	apple = measure()
-	# Single path cache for both apple-chase and tail-chase phases.
-	# Snake evolution is deterministic, so a path computed once stays collision-
-	# free for its full length — we only re-plan when the path is exhausted.
-	plannedPath = []
-	plannedPathIdx = 0
+	bestDirection = None
+	bestDistance = 0
 
-	while True:
-		# Done growing — bail out and let the caller harvest.
-		snakeLen = len(body) - tailIdx
-		if snakeLen >= targetLen:
-			return True
+	for direction in directions:
+		distance = getSafeMoveDistance(direction, cycleIndex, totalTiles, worldSize, body)
 
-		# Re-plan only when the cached path is exhausted.
-		if plannedPathIdx >= len(plannedPath):
-			head = body[len(body) - 1]
-			path = getSafeApplePath(head, apple, body, tailIdx, bodySet, worldSize)
-			if path == None:
-				# No safe apple route — chase the tail until something opens up.
-				tail = body[tailIdx]
-				path = findPath(head, tail, bodySet, worldSize)
-				if path == None or len(path) == 0:
-					return False
-			plannedPath = path
-			plannedPathIdx = 0
+		if distance == None:
+			continue
 
-		step = plannedPath[plannedPathIdx]
-		plannedPathIdx = plannedPathIdx + 1
-		dir = stepToDir(step)
+		if distance > bestDistance:
+			bestDistance = distance
+			bestDirection = direction
 
-		# Move.
-		if not move(dir):
+	return bestDirection
+
+def moveAndCheck(dir, body):
+	global tarX
+	global tarY
+
+	if not move(dir):
+		return False
+
+	newX = get_pos_x()
+	newY = get_pos_y()
+	newHead = (newX, newY)
+
+	if get_entity_type() == Entities.Apple:
+		body.append(newHead)
+
+		nextTarget = measure()
+		if nextTarget == None:
 			return False
+		tarX, tarY = nextTarget
+	else:
+		body.pop(0)
+		body.append(newHead)
 
-		newX = get_pos_x()
-		newY = get_pos_y()
-		newHead = (newX, newY)
+	return True
 
-		# Pop tail BEFORE appending new head. When the tail is the target of a
-		# tail-follow path of length 1, newHead == removed; appending first
-		# would set bodySet membership and the subsequent .remove(removed)
-		# would delete it again, leaving the live cell untracked.
-		if newHead == apple:
-			body.append(newHead)
-			bodySet.add(newHead)
-			apple = measure()
-			plannedPath = []
-			plannedPathIdx = 0
-		else:
-			removed = body[tailIdx]
-			bodySet.remove(removed)
-			tailIdx = tailIdx + 1
-			body.append(newHead)
-			bodySet.add(newHead)
+def produceBoneAsync():
 
+	global tarX
+	global tarY
 
-def produceBone():
-	# Tilling and the world-size change happen once.
 	initBone()
-
+	tarX, tarY = measure()
 	worldSize = get_world_size()
-	# Empirical sweet spot: ~25% fill maximises bones/min. Bones harvested per
-	# cycle = L²; cycle time grows superlinearly past ~25% fill because A* has
-	# to detour around dense body. Past that, rate drops.
-	targetLen = (worldSize * worldSize) // 4
-
-	# Outer loop: grow snake → harvest bones → respawn. Indefinite.
-	# Soil persists across hat changes, so we don't re-till between cycles.
+	cyclePath, cycleIndex = buildHamiltonianCycle(worldSize)
+	totalTiles = len(cyclePath)
+	body = [(get_pos_x(), get_pos_y())]
+	
 	while True:
-		runSnakeCycle(worldSize, targetLen)
 
-		# Harvest: removing the Dinosaur hat drops the entire tail as bones
-		# (n² bones for tail length n, per the wiki).
-		change_hat(Hats.Wizard_Hat)
-		# Respawn a fresh length-1 snake at the drone's current position.
-		change_hat(Hats.Dinosaur_Hat)
+		direction = getBestSafeDirection(cycleIndex, totalTiles, worldSize, body)
+		if direction == None:
+			change_hat(Hats.Wizard_Hat)
+			break
+			
+		if not moveAndCheck(direction, body):
+			change_hat(Hats.Wizard_Hat)
+			break
+	
+	#set_world_size(0)
 
-
-produceBone()
+produceBoneAsync()
