@@ -4,7 +4,7 @@ from Movement import *
 from MovementAsync import *
 
 def initBone():
-	set_world_size(6)
+	#set_world_size(6)
 
 	change_hat(Hats.Wizard_Hat)
 	if can_harvest():
@@ -16,7 +16,7 @@ def initBone():
 
 def exit():
 	change_hat(Hats.Wizard_Hat)
-	set_world_size(0)
+	#set_world_size(0)
 	
 tarX = 0
 tarY = 0

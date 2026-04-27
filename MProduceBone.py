@@ -1,4 +1,4 @@
-# Optimised Hamiltonian Cycle With Only X optimisations
+# Optimised Hamiltonian Cycle With X optimisations and short direct chase
 
 from Movement import *
 from MovementAsync import *
@@ -129,6 +129,52 @@ def getShortcutDirection(cycleIndex, totalTiles, worldSize):
 
 	return None
 
+def canMoveInBounds(direction, worldSize):
+	if not can_move(direction):
+		return False
+
+	nextX = get_pos_x() + deltaX[direction]
+	nextY = get_pos_y() + deltaY[direction]
+	return inBounds(nextX, nextY, worldSize)
+
+def getDirectDirection(worldSize):
+	global tarX
+	global tarY
+	global tailLength
+
+	if tailLength + 1 >= worldSize:
+		return None
+
+	currX = get_pos_x()
+	currY = get_pos_y()
+	deltaToTargetX = abs(tarX - currX)
+	deltaToTargetY = abs(tarY - currY)
+
+	xDirection = None
+	if tarX > currX:
+		xDirection = East
+	elif tarX < currX:
+		xDirection = West
+
+	yDirection = None
+	if tarY > currY:
+		yDirection = North
+	elif tarY < currY:
+		yDirection = South
+
+	if deltaToTargetX >= deltaToTargetY:
+		if xDirection != None and canMoveInBounds(xDirection, worldSize):
+			return xDirection
+		if yDirection != None and canMoveInBounds(yDirection, worldSize):
+			return yDirection
+	else:
+		if yDirection != None and canMoveInBounds(yDirection, worldSize):
+			return yDirection
+		if xDirection != None and canMoveInBounds(xDirection, worldSize):
+			return xDirection
+
+	return None
+
 def moveAndCheck(dir):
 	global tarX
 	global tarY
@@ -161,7 +207,9 @@ def produceBoneAsync():
 	
 	while True:
 
-		direction = getShortcutDirection(cycleIndex, totalTiles, worldSize)
+		direction = getDirectDirection(worldSize)
+		if direction == None:
+			direction = getShortcutDirection(cycleIndex, totalTiles, worldSize)
 		if direction == None:
 			direction = getCycleDirection(cyclePath, cycleIndex)
 			
