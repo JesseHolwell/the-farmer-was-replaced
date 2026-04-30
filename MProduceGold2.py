@@ -45,3 +45,5 @@ def produceGoldAsync():
 	
 	spawn_drone(search, "Right")
 	search("Left")
+	
+produceGoldAsync()

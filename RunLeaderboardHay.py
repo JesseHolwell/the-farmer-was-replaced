@@ -1,0 +1,1 @@
+leaderboard_run(Leaderboards.Hay, "LeaderboardHay", 1000)

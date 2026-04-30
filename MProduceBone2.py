@@ -6,7 +6,7 @@ from MovementAsync import *
 def initBone():
 	#set_world_size(6)
 
-	change_hat(Hats.Wizard_Hat)
+	change_hat(Hats.Straw_Hat)
 	if can_harvest():
 		harvest()
 	tillFieldAsync()
@@ -182,7 +182,7 @@ def produceBoneAsync():
 
 		direction = getBestSafeDirection(cycleIndex, totalTiles, worldSize, body)
 		if direction == None:
-			change_hat(Hats.Wizard_Hat)
+			change_hat(Hats.Straw_Hat)
 			break
 			
 		if not moveAndCheck(direction, body):
@@ -191,4 +191,4 @@ def produceBoneAsync():
 	
 	#set_world_size(0)
 
-produceBoneAsync()
+#produceBoneAsync()

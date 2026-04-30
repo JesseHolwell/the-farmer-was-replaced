@@ -226,4 +226,4 @@ def produceBoneAsync():
 	
 	#set_world_size(0)
 
-produceBoneAsync()
+#produceBoneAsync()

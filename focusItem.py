@@ -1,6 +1,6 @@
 from Orchestration import *
 
-focusItem = Items.Gold
+focusItem = Items.Hay
 
 while True:
 	produce(focusItem)()	

@@ -2,53 +2,23 @@ directions = [North, East, South, West]
 
 deltaX = {East:1, West:-1, North:0, South:0}
 deltaY = {North:1, South:-1, East:0, West:0}
+ws = get_world_size()
 
-def goto(x, y):
+def goto(x2, y2):
+	world_size = get_world_size()
+	world_half = world_size / 2
 
-	currentX = get_pos_x()
-	currentY = get_pos_y()
-	
-	if (x > get_world_size() or y > get_world_size()):
-		return
-		
-	if (currentX == x and currentY == y):
-		return
+	dx = (x2 - get_pos_x() + world_half) % world_size - world_half
+	dy = (y2 - get_pos_y() + world_half) % world_size - world_half
 
-	# X
-	deltaX = abs(currentX - x)
-
-	if (deltaX > get_world_size() / 2):
-		if (x > currentX):
-			directionX = West
-		else:
-			directionX = East
-		deltaX = get_world_size() - deltaX
-	else:
-		if (x < currentX):
-			directionX = West
-		else:
-			directionX = East
-		
-	for i in range(deltaX):
-		move(directionX)	
-		
-	# Y
-	deltaY = abs(currentY - y)
-	
-	if (deltaY > get_world_size() / 2):
-		if (y > currentY):
-			directionY = South
-		else:
-			directionY = North
-		deltaY = get_world_size() - deltaY
-	else:
-		if (y < currentY):
-			directionY = South
-		else:
-			directionY = North
-		
-	for i in range(deltaY):
-		move(directionY)	
+	for _ in range(dx):
+		move(East)
+	for _ in range(-dx):
+		move(West)
+	for _ in range(dy):
+		move(North)
+	for _ in range(-dy):
+		move(South)
 		
 def resetPosition():
 	#while (get_pos_x() != 0):
@@ -56,7 +26,7 @@ def resetPosition():
 	#while (get_pos_y() != 0):
 	#	move(North)
 	goto(0,0)		
-	change_hat(Hats.Gold_Hat)
+	#change_hat(Hats.Gold_Hat)
 		
 def clearField():
 	for i in range(get_world_size()):
