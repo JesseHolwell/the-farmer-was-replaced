@@ -7,22 +7,41 @@ Hats.Gray_Hat,
 Hats.Green_Hat
 ]
 
-def equipHat():
+def HatAchievement():
 	
-	hatsLength = len(unlockedHats)
-
-	index = random() * hatsLength // 1
-	
-	i = 0
-	for x in unlockedHats:
-		if i == index:
-			change_hat(x)
-			
-		i += 1
+	def equipHat():
 		
-	while True:
-		do_a_flip()
-
-for i in range(max_drones()):
-	move(East)
-	spawn_drone(equipHat)
+		hatsLength = len(unlockedHats)
+	
+		index = random() * hatsLength // 1
+		
+		i = 0
+		for x in unlockedHats:
+			if i == index:
+				change_hat(x)
+				
+			i += 1
+			
+		while True:
+			do_a_flip()
+	
+	for i in range(max_drones()):
+		move(East)
+		spawn_drone(equipHat)
+		
+def StackOverfowAchievement():
+	x = 1
+	
+	def Recursion():
+		global x
+		x = x + 1000000
+		Recursion()
+		
+	Recursion()	
+StackOverfowAchievement()	
+	
+	
+	
+	
+	
+	

@@ -1,4 +1,5 @@
 # Targeting the production achievement farming a single tile with a companion
+# 200m per minute
 	
 from Movement import *
 from MovementAsync import *
@@ -9,11 +10,10 @@ from Statistics import *
 runtime = 60
 
 def runCondition(time):
-	if (time):
+	if (time == None):
+		return num_items(Items.Hay) < 2000000000
+	else:
 		return get_time() - time < runtime
-#	else
-#		return num_items(Items.Hay) < 2000000000
-
 
 def generate_points():
 
@@ -28,7 +28,6 @@ def generate_points():
 def collides(point, points):
 	return point in points
 	
-
 def getSubSquare(id, cols, rows, grid):
 
 	id -= 1
@@ -50,13 +49,10 @@ def plantCompanionAtPoint(point, map):
 	x, y = point
 	goto(x, y)
 	
-	#plantHay()
-	
 	companion = get_companion()
 	if companion != None:
 
 		nextItem, (x2, y2) = companion
-		#goto(x2, y2)
 
 		while (collides((x2, y2), points)):
 			till()
@@ -74,24 +70,12 @@ def harvestPoint(point):
 	x, y = point
 	goto(x, y)
 	
-	#while not can_harvest():
-	#	if (num_items(Items.Fertilizer) > 100
-	#		and num_items(Items.Weird_Substance) > 0):
-	#		use_item(Items.Fertilizer)
-	#		use_item(Items.Weird_Substance)
-	
 	while not can_harvest():
 		if get_water() < 0.90:
 			use_item(Items.Water)
 	harvest()
 		
-def waterPoint(point):
-	#x, y = point
-	#goto(x, y)
-	while get_water() < 0.90:
-		use_item(Items.Water)
-		
-def hayWorker(id, startTime):
+def hayWorker(id, timeBased):
 	
 	x, y = getPoint(id)
 	goto(x, y)
@@ -101,27 +85,29 @@ def hayWorker(id, startTime):
 	
 	map = plantCompanionAtPoint((x, y), map)
 	goto(x, y)
+	
+	startTime = None
+	if (timeBased):
+		startTime = get_time()
+	
 	while (runCondition(startTime)):
-		#waterPoint((x, y))
 		harvestPoint((x, y))
 		map = plantCompanionAtPoint((x, y), map)
 
-def producePolycultureAsync():
+def produceHayAsync(timeBased):
 	
 	startingHay = num_items(Items.Hay)
-	startTime = get_time()
 	
 	clear()
 	tillFieldAsync()
-	#resetPosition()
 	drones = []		
 	
 	for i in range(31):
-		spawned = spawn_drone(hayWorker, i, startTime)
+		spawned = spawn_drone(hayWorker, i, timeBased)
 		if spawned:
 			drones.append(spawned)
 		
-	hayWorker(31, startTime)
+	hayWorker(31, timeBased)
 				
 	for drone in drones:
 		wait_for(drone)
@@ -130,7 +116,7 @@ def producePolycultureAsync():
 		
 	quick_print("Produced", endingHay - startingHay, "in", runtime, "seconds")
 	
-producePolycultureAsync()
+produceHayAsync(True)
 
 	
 	

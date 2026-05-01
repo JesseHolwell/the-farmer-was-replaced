@@ -1,7 +1,7 @@
 
-filename = "RapidProduceHay"
+filename = "RapidProducePower"
 sim_unlocks = Unlocks
-sim_items = {Items.Hay:100000999999999, Items.Wood:1000009999999, Items.Power: 1000000000}
+sim_items = {Items.Carrot:100000999999999, Items.Power: 1000000000, Items.Water: 1000000}
 sim_globals = {}
 seed = 0
 speedup = 1000

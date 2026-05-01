@@ -7,6 +7,9 @@ def producePowerColumn(x):
 	for y in range(get_world_size()):
 		goto(x, y)
 		plantSunflower()
+		if (measure() == 15):
+			while get_water() < 0.75:
+				use_item(Items.Water)
 	
 def harvestPowerColumn(x, size):
 	for y in range(get_world_size()):
@@ -29,7 +32,8 @@ def producePowerAsync():
 	resetPosition()
 	
 	executeAndDoTaskByWorldIndex(producePowerColumn)
-		
+	
+	#sunflowers range from 7 to 15
 	for i in range(7, 16):
 		index = 22 - i		
 		executeAndDoTaskByWorldIndex(harvestPowerColumnTask(index))

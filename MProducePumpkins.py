@@ -16,10 +16,10 @@ def producePumpkinColumn(x):
 			
 			goto(x, y)
 			
-			if (can_harvest()
-				and get_entity_type() != Entities.Grass
-				and get_entity_type() != Entities.Pumpkin):
-				harvest()
+			#if (can_harvest()
+			#	and get_entity_type() != Entities.Grass
+			#	and get_entity_type() != Entities.Pumpkin):
+			#	harvest()
 				
 			if (get_ground_type() == Grounds.Grassland):
 				till()

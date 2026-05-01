@@ -1,1 +1,1 @@
-leaderboard_run(Leaderboards.Hay, "LeaderboardHay", 1000)
+leaderboard_run(Leaderboards.Hay, "LeaderboardHay", 100000)

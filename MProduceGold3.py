@@ -4,6 +4,9 @@ directions = [North, East, South, West]
 opposite = {North:South, East:West, South:North, West:East}
 run = 300
 
+# What if we set up our drones in a grid, then spawn the maze?
+# Then which drone searches? Feels messy..
+
 # TODO: we need to define how to know once 300 iterations of a maze have been completed
 # is this just num_items(Items.Gold) incremented by 9863168
 
