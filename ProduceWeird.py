@@ -1,6 +1,7 @@
 from Movement import *
 
 def produceWeird():
+	clear()
 	resetPosition()
 
 	for x in range(2):
