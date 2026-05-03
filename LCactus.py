@@ -1,4 +1,4 @@
-from MProduceCactus import *
+from RapidProduceCactus import *
 
 while num_items(Items.Cactus) < 33554432:
 	produceCactusAsync()
