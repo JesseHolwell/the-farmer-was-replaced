@@ -1,4 +1,7 @@
 from RapidProduceCactus import *
 
-while num_items(Items.Cactus) < 131072:
-	produceCactusAsync()
+def runCondition():
+	return num_items(Items.Cactus) < 131072
+
+produceCactusAsync(runCondition)		
+	

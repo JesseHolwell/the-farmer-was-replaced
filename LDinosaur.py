@@ -1,5 +1,8 @@
 from MProduceBone2 import *
 
-while num_items(Items.Bone) < 33488928:
-	produceBoneAsync()
+def runCondition():
+	return num_items(Items.Bone) < 33488928
+
+produceBoneAsync(runCondition)		
+	
 	

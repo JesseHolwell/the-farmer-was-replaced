@@ -1,5 +1,6 @@
 from RapidProduceGold import *
 
-while num_items(Items.Gold) < 9863168:
-	produceGoldAsync()
-	
+def runCondition():
+	return num_items(Items.Gold) < 9863168
+
+produceGoldAsync(runCondition)

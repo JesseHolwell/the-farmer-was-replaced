@@ -96,8 +96,6 @@ def hayWorker(id, timeBased):
 
 def produceHayAsync(timeBased):
 	
-	startingHay = num_items(Items.Hay)
-	
 	clear()
 	tillFieldAsync()
 	drones = []		
@@ -111,12 +109,6 @@ def produceHayAsync(timeBased):
 				
 	for drone in drones:
 		wait_for(drone)
-		
-	endingHay = num_items(Items.Hay)
-		
-	quick_print("Produced", endingHay - startingHay, "in", runtime, "seconds")
-	
-produceHayAsync(True)
 
 	
 	
