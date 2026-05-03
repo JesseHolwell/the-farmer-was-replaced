@@ -1,19 +1,47 @@
-# Targeting the production achievement farming descending order
-# 12k per minute
+from H_Movement import *
+from H_MovementAsync import *
+from H_SmartPlanting import *
+from H_Multithreading import *
 
-from MProducePower import *
-
-def runCondition(time):
-	return get_time() - time < runtime
-
-runtime = 180
-clear()
-startingPower = num_items(Items.Power)
-time = get_time()
-while runCondition(time):
-	producePowerAsync()
+def producePowerColumn(x):
+	for y in range(get_world_size()):
+		goto(x, y)
+		plantSunflower()
+		if (measure() == 15):
+			while get_water() < 0.75:
+				use_item(Items.Water)
 	
-endingPower = num_items(Items.Power)
+def harvestPowerColumn(x, size):
+	for y in range(get_world_size()):
+		goto(x, y)
+		if (measure() == size):
+			# this is gross im tired
+			if not can_harvest():
+				while not can_harvest():
+					if get_water() < 0.75:
+						use_item(Items.Water)
+						
+			harvest()
+			
+def harvestPowerColumnTask(index):
+	def f(x):
+		harvestPowerColumn(x, index)
+	return f
+	
+def producePowerAsync():
+	clear()
+	resetPosition()
+	
+	executeAndDoTaskByWorldIndex(producePowerColumn)
+	
+	#sunflowers range from 7 to 15
+	for i in range(7, 16):
+		index = 22 - i		
+		executeAndDoTaskByWorldIndex(harvestPowerColumnTask(index))
 
-quick_print("Produced", endingPower - startingPower, "in", runtime, "seconds")
+#producePowerAsync()
+	
+				
+	
+		
 	

@@ -1,4 +1,4 @@
-from PBone import *
+from P_Dinosaur import *
 from S__Benchmark import *
 	
 function = produceBoneAsync

@@ -1,14 +1,14 @@
 
 map = {
-	Items.Hay:"SHay",
-	Items.Wood:"SWood",
-	Items.Carrot:"SCarrot",
-	Items.Pumpkin:"SPumpkin",
-	Items.Cactus:"SCactus",
-	Items.Power:"SSunflower",
-	Items.Bone:"SBone",
-	Items.Weird_Substance:"SWeird",
-	Items.Gold:"SGold"
+	Items.Hay:"S_Hay",
+	Items.Wood:"S_Wood",
+	Items.Carrot:"S_Carrot",
+	Items.Pumpkin:"S_Pumpkin",
+	Items.Cactus:"S_Cactus",
+	Items.Power:"S_Sunflower",
+	Items.Bone:"S_Bone",
+	Items.Weird_Substance:"S_Weird",
+	Items.Gold:"S_Gold"
 }
 sim_unlocks = Unlocks
 sim_items = {

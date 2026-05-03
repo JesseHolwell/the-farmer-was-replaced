@@ -1,10 +1,10 @@
 unlockedHats = [
-Hats.Brown_Hat,
-Hats.Cactus_Hat,
-Hats.Carrot_Hat,
-Hats.Gold_Hat,
-Hats.Gray_Hat,
-Hats.Green_Hat
+	Hats.Brown_Hat,
+	Hats.Cactus_Hat,
+	Hats.Carrot_Hat,
+	Hats.Gold_Hat,
+	Hats.Gray_Hat,
+	Hats.Green_Hat
 ]
 
 def HatAchievement():

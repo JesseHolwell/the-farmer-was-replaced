@@ -1,20 +1,20 @@
 leaderboardMap = {
-	Leaderboards.Hay: "LHay",
-	Leaderboards.Hay_Single: "LHaySingle",
-	Leaderboards.Wood: "LWood",
-	Leaderboards.Wood_Single: "LWoodSingle",
-	Leaderboards.Carrots: "LCarrots",
-	Leaderboards.Carrots_Single: "LCarrotsSingle",
-	Leaderboards.Pumpkins: "LPumpkins",
-	Leaderboards.Pumpkins_Single: "LPumpkinsSingle",
-	Leaderboards.Sunflowers: "LSunflowers",
-	Leaderboards.Sunflowers_Single: "LSunflowersSingle",
-	Leaderboards.Cactus: "LCactus",
-	Leaderboards.Cactus_Single: "LCactusSingle",
-	Leaderboards.Dinosaur: "LDinosaur",
-	Leaderboards.Maze: "LMaze",
-	Leaderboards.Maze_Single: "LMazeSingle",
-	Leaderboards.Fastest_Reset: "LFull"
+	Leaderboards.Hay: "L_Hay",
+	Leaderboards.Hay_Single: "L_HaySingle",
+	Leaderboards.Wood: "L_Wood",
+	Leaderboards.Wood_Single: "L_WoodSingle",
+	Leaderboards.Carrots: "L_Carrots",
+	Leaderboards.Carrots_Single: "L_CarrotsSingle",
+	Leaderboards.Pumpkins: "L_Pumpkins",
+	Leaderboards.Pumpkins_Single: "L_PumpkinsSingle",
+	Leaderboards.Sunflowers: "L_Sunflowers",
+	Leaderboards.Sunflowers_Single: "L_SunflowersSingle",
+	Leaderboards.Cactus: "L_Cactus",
+	Leaderboards.Cactus_Single: "L_CactusSingle",
+	Leaderboards.Dinosaur: "L_Dinosaur",
+	Leaderboards.Maze: "L_Maze",
+	Leaderboards.Maze_Single: "L_MazeSingle",
+	Leaderboards.Fastest_Reset: "L_Full"
 }
 
 leaderboard = Leaderboards.Hay

@@ -1,8 +1,8 @@
-from Movement import *
-from MovementAsync import *
-from SmartPlanting import *
-from Multithreading import *
-from Statistics import *
+from H_Movement import *
+from H_MovementAsync import *
+from H_SmartPlanting import *
+from H_Multithreading import *
+from H_Statistics import *
 	
 def plantRecusively(point, item, isTreeFocus, harvestOrder):
 	x, y = point

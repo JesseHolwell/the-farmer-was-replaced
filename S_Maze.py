@@ -1,4 +1,4 @@
-from PGold import *
+from P_Maze import *
 from S__Benchmark import *
 	
 function = produceGoldAsync
