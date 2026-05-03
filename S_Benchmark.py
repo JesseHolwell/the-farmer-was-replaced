@@ -1,15 +1,15 @@
 def benchmark(target, function):
-	runtime = 60
+	runTime = 60
 	runItems = 1000
 		
 	startItems = num_items(target)
 	startTime = get_time()
 	
 	def runConditionTime():
-		return get_time() - startTime < runtime
+		return get_time() - startTime < runTime
 		
 	def runConditionItems():
-		return num_items(target) - startItems < 	
+		return num_items(target) - startItems < runItems
 		
 	function(runConditionTime)
 	#function(runConditionItems)
