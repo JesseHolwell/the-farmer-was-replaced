@@ -1,19 +1,8 @@
-# Targeting the production achievement farming a single tile with a companion
-# 200m per minute
-	
 from H_Movement import *
 from H_MovementAsync import *
 from H_SmartPlanting import *
 from H_Multithreading import *
 from H_Statistics import *
-
-runtime = 60
-
-def runCondition(time):
-	if (time == None):
-		return num_items(Items.Hay) < 2000000000
-	else:
-		return get_time() - time < runtime
 
 def generate_points():
 
@@ -75,7 +64,7 @@ def harvestPoint(point):
 			use_item(Items.Water)
 	harvest()
 		
-def hayWorker(id, timeBased):
+def worker(id, runCondition):
 	
 	x, y = getPoint(id)
 	goto(x, y)
@@ -86,31 +75,22 @@ def hayWorker(id, timeBased):
 	map = plantCompanionAtPoint((x, y), map)
 	goto(x, y)
 	
-	startTime = None
-	if (timeBased):
-		startTime = get_time()
-	
-	while (runCondition(startTime)):
+	while (runCondition()):
 		harvestPoint((x, y))
 		map = plantCompanionAtPoint((x, y), map)
 
-def produceHayAsync(timeBased):
+def produceHay(runCondition):
 	
 	clear()
 	tillFieldAsync()
 	drones = []		
 	
-	for i in range(31):
-		spawned = spawn_drone(hayWorker, i, timeBased)
+	for i in range(max_drones() - 1):
+		spawned = spawn_drone(worker, i, runCondition)
 		if spawned:
 			drones.append(spawned)
 		
-	hayWorker(31, timeBased)
+	worker(max_drones() - 1, runCondition)
 				
 	for drone in drones:
 		wait_for(drone)
-
-	
-	
-	
-		

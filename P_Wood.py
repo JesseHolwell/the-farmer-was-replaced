@@ -1,19 +1,8 @@
-# Targeting the production achievement farming a grid with an offset grid of grass
-# 1.5b per minute
-	
 from H_Movement import *
 from H_MovementAsync import *
 from H_SmartPlanting import *
 from H_Multithreading import *
 from H_Statistics import *
-
-runtime = 300
-
-def runCondition(time):
-	if (time == None):
-		return num_items(Items.Wood) < 2000000000
-	else:
-		return get_time() - time < runtime
 		
 def collides(point):
 	x, y = point
@@ -38,15 +27,11 @@ def harvestPoint():
 			use_item(Items.Water)
 	harvest()
 		
-def worker(id, timeBased):
+def worker(id, runCondition):
 	
 	x, y = 0, id
 	
-	startTime = None
-	if (timeBased):
-		startTime = get_time()
-	
-	while (runCondition(startTime)):
+	while (runCondition()):
 		if (x + y) % 2 == 1:
 			goto(x, y)
 			if (get_entity_type() == Entities.Tree):
@@ -54,31 +39,17 @@ def worker(id, timeBased):
 			plantTree()
 		x += 1
 
-def produceTreesAsync(timeBased):
-	
-	starting = num_items(Items.Wood)
+def produceWood(runCondition):
 	
 	clear()
+	drones = []
 	
-	drones = []		
-	
-	for i in range(31):
-		spawned = spawn_drone(worker, i, timeBased)
+	for i in range(max_drones() - 1):
+		spawned = spawn_drone(worker, i, runCondition)
 		if spawned:
 			drones.append(spawned)
 		
-	worker(31, timeBased)
+	worker(max_drones() - 1, runCondition)
 				
 	for drone in drones:
 		wait_for(drone)
-		
-	ending = num_items(Items.Wood)
-		
-	quick_print("Produced", ending - starting, "in", runtime, "seconds")
-	
-produceTreesAsync(True)
-
-	
-	
-	
-		

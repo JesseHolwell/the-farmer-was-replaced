@@ -62,11 +62,11 @@ def produce(item):
 		Items.Wood:produceWoodAsync,
 		Items.Carrot:produceCarrotsAsync,
 		Items.Pumpkin:producePumpkinsAsync,
-		Items.Weird_Substance:produceWeird,
+		Items.Weird_Substance:produceWeirdAsync,
 		Items.Gold:produceGoldAsync,
 		Items.Power:producePowerAsync,
 		Items.Cactus:produceCactusAsync,
-		#Items.Bone:produceBone
+		Items.Bone:produceBoneAsync
 	}
 		
 	return resources[item]

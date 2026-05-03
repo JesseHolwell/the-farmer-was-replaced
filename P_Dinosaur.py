@@ -4,7 +4,7 @@ from H_Movement import *
 from H_MovementAsync import *
 
 def initBone():
-	set_world_size(10)
+	#set_world_size(10)
 
 	change_hat(Hats.Straw_Hat)
 	if can_harvest():
@@ -191,4 +191,4 @@ def produceBoneAsync():
 	
 	#set_world_size(0)
 
-produceBoneAsync()
+#produceBoneAsync()

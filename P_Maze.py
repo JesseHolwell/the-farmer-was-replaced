@@ -194,5 +194,3 @@ def produceGoldAsync():
 	ending = num_items(Items.Gold)
 	runtime = get_time() - startTime	
 	quick_print("Produced", ending - starting, "in", runtime, "with", iterationTarget, "iterations")
-	
-produceGoldAsync()
