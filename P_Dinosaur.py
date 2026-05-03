@@ -1,7 +1,7 @@
 # Optimised Hamiltonian Cycle With X/Y optimisations
 
-from HMovement import *
-from HMovementAsync import *
+from H_Movement import *
+from H_MovementAsync import *
 
 def initBone():
 	set_world_size(10)

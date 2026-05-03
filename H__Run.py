@@ -1,5 +1,5 @@
-from HOrchestration import *
-from HStatistics import *
+from H_Orchestration import *
+from H_Statistics import *
 
 change_hat(Hats.Top_Hat)
 

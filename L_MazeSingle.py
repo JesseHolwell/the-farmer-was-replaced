@@ -1,4 +1,4 @@
-from RapidProduceGold import *
+from PGold import *
 
 def runCondition():
 	return num_items(Items.Gold) < 616448

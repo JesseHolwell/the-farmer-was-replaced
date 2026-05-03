@@ -1,10 +1,10 @@
-from PPumpkins import *
-from PPolyculture import *
-from PSunflowers import *
-from PCactus import *
-from PMaze import *
-from PDinosaur import *
-from PWeird import *
+from P_Pumpkins import *
+from P_Polyculture import *
+from P_Sunflowers import *
+from P_Cactus import *
+from P_Maze import *
+from P_Dinosaur import *
+from P_Weird import *
 
 weights = {
 	Items.Hay:100,
