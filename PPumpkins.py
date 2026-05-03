@@ -1,43 +1,27 @@
-from Movement import *
+# Targeting the production achievement farming map filled pumpkin
+# 20m per minute
 
-def producePumpkins():
-	#clear()
-	resetPosition()
-	#clearField()
+from MProducePumpkins import *
+from MovementAsync import *
+
+
+def runCondition(time):
+	return get_time() - time < runtime
+
+runtime = 120
+clear()
+#tillFieldAsync()
+
+#while (num_drones() != 1):
+#	do_a_flip()
 	
-	pumpkins = []
-	pumpkinCount = 0
-	for i in range(get_world_size() * get_world_size()):
-		pumpkins.append(0)
+startingPumpkins = num_items(Items.Pumpkin)
+
+time = get_time()
+while runCondition(time):
+	producePumpkinsAsync()
 	
-	while True:
-		
-		for i in range(len(pumpkins)):
-			
-			if (pumpkins[i] == 1):
-				continue
-			
-			goto(i // get_world_size(), i % get_world_size())
-			
-			if (can_harvest()
-				and get_entity_type() != Entities.Grass
-				and get_entity_type() != Entities.Pumpkin):
-				harvest()
-				
-			if (get_ground_type() == Grounds.Grassland):
-				till()
-			
-			if (can_harvest()):
-				pumpkins[i] = 1
-				pumpkinCount = pumpkinCount + 1
-			else:
-				plant(Entities.Pumpkin)
-				
-		if (pumpkinCount == get_world_size() * get_world_size()):
-			harvest()
-			break
-	#		pumpkinCount = 0
-	#		for i in range(get_world_size() * get_world_size()):
-	#			pumpkins[i] = 0
-			
-#producePumpkins()
+endingPumpkins = num_items(Items.Pumpkin)
+
+quick_print("Produced", endingPumpkins - startingPumpkins, "in", runtime, "seconds")
+	

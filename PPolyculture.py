@@ -1,72 +1,68 @@
 from Movement import *
+from MovementAsync import *
 from SmartPlanting import *
+from Multithreading import *
+from Statistics import *
 	
-harvestOrder = []
-occupied = []
-treeMap = []
-	
-def plantRecusively(point, item):
+def plantRecusively(point, item, isTreeFocus, harvestOrder):
 	x, y = point
-	if occupied[x][y] == 1:
-		return
-		
+
 	goto(x, y)
 	
-	if (can_harvest() and get_entity_type() != Entities.Grass):
-		harvest()
-
-	plantItem(item)()
-	
-	harvestOrder.append((x, y))
-	occupied[x][y] = 1
-	
-	if (item == Entities.Tree):
-		treeMap[x][y] = 1
-	
-	nextItem, (x2, y2) = get_companion()
-	
-	plantRecusively((x2, y2), nextItem)
-	
-
-def producePolyculture(focusItem):
-	global harvestOrder
-	global occupied
-	global treeMap
-	
-	resetPosition()
+	if get_entity_type() == None:
+		if (item == Entities.Tree
+			and isTreeFocus
+			and (x + y) % 2 == 0):
+			item = Entities.Bush
+			
+		plantItem(item)()
+		harvestOrder.append((x, y))
+		companion = get_companion()
+		if companion != None:
+			nextItem, (x2, y2) = companion
+			plantRecusively((x2, y2), nextItem, isTreeFocus, harvestOrder)
+		
+def produceColumn(x, focusItem, isTreeFocus):
 	harvestOrder = []
-	occupied = []
-	treeMap = []
-
-	for x in range(get_world_size()):
-		occupied.insert(x, [])
-		treeMap.insert(x, [])
-		for y in range(get_world_size()):
-			occupied[x].insert(y, 0)
-			treeMap[x].insert(y, 0)
-
-	for x in range(get_world_size()):
-		for y in range(get_world_size()):
-			
-			nextItem = focusItem
-			
-			if (nextItem == Entities.Tree
-				and ((x > 0 and treeMap[x-1][y] == 1)
-				or (y > 0 and treeMap[x][y-1] == 1)
-				or (x < get_world_size() - 1 and treeMap[x+1][y] == 1)
-				or (y < get_world_size() - 1 and treeMap[x][y+1] == 1))):
-					nextItem = Entities.Bush
-			
-			plantRecusively((x, y), nextItem)
-				
+	for y in range(get_world_size()):
+		plantRecusively((x, y), focusItem, isTreeFocus, harvestOrder)
+		
 	for i in harvestOrder:
 		x, y = i
 		goto(x, y)
+		if get_entity_type() != None:
+			while get_entity_type() != None and not can_harvest():
+				if (get_water() < 0.75):
+					use_item(Items.Water)
+				do_a_flip()
 		harvest()
 
+def producePolycultureAsync(focusItem):
+	clear()
+	resetPosition()
+	tillFieldAsync()
+	drones = []		
+	isTreeFocus = focusItem == Entities.Tree
+
+	for x in range(get_world_size()):
+		spawned = False
+		while not spawned:
+			spawned = spawn_drone(produceColumn, x, focusItem, isTreeFocus)	
+			if spawned:
+				drones.append(spawned)
+			else:
+				produceColumn(x, focusItem, isTreeFocus)
+				spawned = True
 		
-#producePolyculture(Entities.Grass)	
+	for drone in drones:
+		wait_for(drone)
+		
+def producePolyTrees():
+	producePolycultureAsync(Entities.Tree)	
+
+#runWithStats(producePolyTrees, Items.Wood)
 
 	
 	
 	
+		

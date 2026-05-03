@@ -1,10 +1,10 @@
-from MProducePumpkins import *
-from MProducePolyculture import *
-from MProducePower import *
-from MProduceCactus import *
-from MProduceGold import *
-from MProduceBone import *
-from ProduceWeird import *
+from PPumpkins import *
+from PPolyculture import *
+from PSunflowers import *
+from PCactus import *
+from PMaze import *
+from PDinosaur import *
+from PWeird import *
 
 weights = {
 	Items.Hay:100,

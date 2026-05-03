@@ -1,4 +1,4 @@
-from Movement import *
+from HMovement import *
 
 right_of = {North:East, East:South, South:West, West:North}
 left_of = {North:West, West:South, South:East, East:North}
