@@ -2,7 +2,7 @@ from H_Movement import *
 from H_MovementAsync import *
 from H_Multithreading import *
 
-def worker(id, runCondition):
+def worker(x, runCondition):
 	pumpkins = []
 	pumpkinCount = 0
 	for y in range(get_world_size()):

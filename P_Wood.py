@@ -17,13 +17,15 @@ def plantTree():
 		nextItem, (x2, y2) = get_companion()
 		viableCompanion = not (collides((x2, y2)) or nextItem != Entities.Grass)
 		
-	while get_water() < 0.75:
-		use_item(Items.Water)
+	if (num_items(Items.Water) > 10):
+		while get_water() < 0.75:
+			use_item(Items.Water)
 		
 def harvestPoint():
 	while not can_harvest():
-		if get_water() < 0.75:
-			use_item(Items.Water)
+		if (num_items(Items.Water) > 10):
+			if get_water() < 0.75:
+				use_item(Items.Water)
 	harvest()
 		
 def worker(id, runCondition):
