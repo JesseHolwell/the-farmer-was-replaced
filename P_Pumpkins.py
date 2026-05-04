@@ -2,7 +2,7 @@ from H_Movement import *
 from H_MovementAsync import *
 from H_Multithreading import *
 
-def producePumpkinColumn(x):
+def worker(id, runCondition):
 	pumpkins = []
 	pumpkinCount = 0
 	for y in range(get_world_size()):
@@ -15,23 +15,15 @@ def producePumpkinColumn(x):
 				continue
 			
 			goto(x, y)
-			
-			#if (can_harvest()
-			#	and get_entity_type() != Entities.Grass
-			#	and get_entity_type() != Entities.Pumpkin):
-			#	harvest()
 				
 			if (get_ground_type() == Grounds.Grassland):
 				till()
 			
 			if (can_harvest()):
 				pumpkins[y] = 1
-				pumpkinCount = pumpkinCount + 1
+				pumpkinCount += 1
 			else:
 				plant(Entities.Pumpkin)
-				#if (pumpkinCount / get_world_size()
-					#> get_water()):
-					#use_item(Items.Water)
 				
 				if (pumpkinCount > get_world_size() / 2):
 					use_item(Items.Water)
@@ -39,10 +31,8 @@ def producePumpkinColumn(x):
 			if pumpkinCount == get_world_size():
 				break
 	
-
-def producePumpkinsAsync():
-	resetPosition()
-	executeAndDoTaskByWorldIndex(producePumpkinColumn)
-	harvest()
-			
-#producePumpkins()
+def producePumpkins(runCondition):
+	clear()
+	while (runCondition()):
+		runWorkers(worker, runCondition)
+		harvest()

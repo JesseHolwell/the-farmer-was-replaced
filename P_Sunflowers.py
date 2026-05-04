@@ -3,7 +3,7 @@ from H_MovementAsync import *
 from H_SmartPlanting import *
 from H_Multithreading import *
 
-def producePowerColumn(x):
+def produceSunflowersColumn(x):
 	for y in range(get_world_size()):
 		goto(x, y)
 		plantSunflower()
@@ -11,7 +11,7 @@ def producePowerColumn(x):
 			while get_water() < 0.75:
 				use_item(Items.Water)
 	
-def harvestPowerColumn(x, size):
+def harvestSunflowersColumn(x, size):
 	for y in range(get_world_size()):
 		goto(x, y)
 		if (measure() == size):
@@ -23,23 +23,21 @@ def harvestPowerColumn(x, size):
 						
 			harvest()
 			
-def harvestPowerColumnTask(index):
+def harvestSunflowersColumnTask(index):
 	def f(x):
-		harvestPowerColumn(x, index)
+		harvestSunflowersColumn(x, index)
 	return f
 	
-def producePowerAsync():
+def produceSunflowers(runCondition):
 	clear()
-	resetPosition()
 	
-	executeAndDoTaskByWorldIndex(producePowerColumn)
-	
-	#sunflowers range from 7 to 15
-	for i in range(7, 16):
-		index = 22 - i		
-		executeAndDoTaskByWorldIndex(harvestPowerColumnTask(index))
-
-#producePowerAsync()
+	while (runCondition()):
+		executeAndDoTaskByWorldIndex(produceSunflowersColumn)
+		
+		#sunflowers range from 7 to 15
+		for i in range(7, 16):
+			index = 22 - i		
+			executeAndDoTaskByWorldIndex(harvestSunflowersColumnTask(index))
 	
 				
 	

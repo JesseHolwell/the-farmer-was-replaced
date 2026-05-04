@@ -1,5 +1,5 @@
 from P_Wood import *
-from S__Benchmark import *
+from H_Benchmark import *
 	
-function = produceWoodAsync
+function = produceWood
 benchmark(function)

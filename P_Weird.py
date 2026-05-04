@@ -1,19 +1,8 @@
-# Targeting the production achievement farming a single tile with a companion
-# 200m per minute
-	
 from H_Movement import *
 from H_MovementAsync import *
 from H_SmartPlanting import *
 from H_Multithreading import *
 from H_Statistics import *
-
-runtime = 60
-
-def runCondition(time):
-	if (time == None):
-		return num_items(Items.Weird_Substance) < 2000000000
-	else:
-		return get_time() - time < runtime
 
 def generate_points():
 
@@ -73,7 +62,7 @@ def harvestPoint(point):
 	use_item(Items.Fertilizer)
 	harvest()
 		
-def hayWorker(id, timeBased):
+def worker(id, timeBased):
 	
 	x, y = getPoint(id)
 	goto(x, y)
@@ -92,29 +81,10 @@ def hayWorker(id, timeBased):
 		harvestPoint((x, y))
 		map = plantCompanionAtPoint((x, y), map)
 
-def produceWeirdAsync(timeBased):
-	
-	starting = num_items(Items.Weird_Substance)
-	
+def produceWeird(runCondition):
 	clear()
-	tillFieldAsync()
-	drones = []		
-	
-	for i in range(31):
-		spawned = spawn_drone(hayWorker, i, timeBased)
-		if spawned:
-			drones.append(spawned)
-		
-	hayWorker(31, timeBased)
-				
-	for drone in drones:
-		wait_for(drone)
-		
-	ending = num_items(Items.Weird_Substance)
-		
-	quick_print("Produced", ending - starting, "in", runtime, "seconds")
-	
-#produceWeirdAsync(True)
+	tillField()
+	runWorkers(worker, runCondition)
 
 	
 	

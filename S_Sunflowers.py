@@ -1,5 +1,5 @@
 from P_Sunflowers import *
-from S__Benchmark import *
+from H_Benchmark import *
 	
-function = produceSunflowersAsync
+function = produceSunflowers
 benchmark(function)

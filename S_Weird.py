@@ -1,5 +1,5 @@
 from P_Weird import *
-from S__Benchmark import *
+from H_Benchmark import *
 	
-function = produceWeirdAsync
+function = produceWeird
 benchmark(function)

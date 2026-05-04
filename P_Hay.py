@@ -65,7 +65,6 @@ def harvestPoint(point):
 	harvest()
 		
 def worker(id, runCondition):
-	
 	x, y = getPoint(id)
 	goto(x, y)
 	till()
@@ -80,17 +79,7 @@ def worker(id, runCondition):
 		map = plantCompanionAtPoint((x, y), map)
 
 def produceHay(runCondition):
-	
 	clear()
-	tillFieldAsync()
-	drones = []		
+	tillField()
+	runWorkers(worker, runCondition)
 	
-	for i in range(max_drones() - 1):
-		spawned = spawn_drone(worker, i, runCondition)
-		if spawned:
-			drones.append(spawned)
-		
-	worker(max_drones() - 1, runCondition)
-				
-	for drone in drones:
-		wait_for(drone)

@@ -2,7 +2,7 @@ from H_Movement import *
 from H_MovementAsync import *
 from H_SmartPlanting import *
 
-def produceCactusColumnSorted(x):
+def workerColumn(x):
 	sizeMap = {}
 	for y in range(get_world_size()):
 		goto(x, y)
@@ -27,7 +27,7 @@ def produceCactusColumnSorted(x):
 		if not swapped:
 			break
 				
-def sortCactusRow(y):
+def workerRow(y):
 	sizeMap = {}
 	for x in range(get_world_size()):
 		goto(x, y)
@@ -51,10 +51,9 @@ def sortCactusRow(y):
 		if not swapped:
 			break
 
-def produceCactusAsync():
-	resetPosition()
-	executeAndDoTaskByWorldIndex(produceCactusColumnSorted)
-	executeAndDoTaskByWorldIndex(sortCactusRow, True)
-	harvest()
-			
-#produceCactus()
+def produceCactus(runCondition):
+	clear()
+	while (runCondition()):
+		runWorkers(workerColumn, None)
+		runWorkers(workerRow, None)
+		harvest()

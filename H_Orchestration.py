@@ -46,27 +46,27 @@ def getLeast():
 	
 	return lowestItem
 	
-def produceHayAsync():
-	producePolycultureAsync(Entities.Grass)
+def producePolyHay():
+	producePolyculture(Entities.Grass)
 	
-def produceWoodAsync():
-	producePolycultureAsync(Entities.Tree)
+def producePolyWood():
+	producePolyculture(Entities.Tree)
 	
-def produceCarrotsAsync():
-	producePolycultureAsync(Entities.Carrot)
+def producePolyCarrots():
+	producePolyculture(Entities.Carrot)
 	
 def produce(item):
 	
 	resources = {
-		Items.Hay:produceHayAsync,
-		Items.Wood:produceWoodAsync,
-		Items.Carrot:produceCarrotsAsync,
-		Items.Pumpkin:producePumpkinsAsync,
-		Items.Weird_Substance:produceWeirdAsync,
-		Items.Gold:produceGoldAsync,
-		Items.Power:producePowerAsync,
-		Items.Cactus:produceCactusAsync,
-		Items.Bone:produceBoneAsync
+		Items.Hay:producePolyHay,
+		Items.Wood:producePolyWood,
+		Items.Carrot:producePolyCarrots,
+		Items.Pumpkin:producePumpkins,
+		Items.Weird_Substance:produceWeird,
+		Items.Gold:produceMaze,
+		Items.Power:produceSunflowers,
+		Items.Cactus:produceCactus,
+		Items.Bone:produceDinosaur
 	}
 		
 	return resources[item]

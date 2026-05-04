@@ -5,13 +5,10 @@ from H_MovementAsync import *
 
 def initBone():
 	#set_world_size(10)
-
 	change_hat(Hats.Straw_Hat)
-	if can_harvest():
-		harvest()
-	tillFieldAsync()
+	clear()
+	tillField()
 	resetPosition()
-
 	change_hat(Hats.Dinosaur_Hat)
 
 def exit():
@@ -166,29 +163,26 @@ def moveAndCheck(dir, body):
 
 	return True
 
-def produceBoneAsync():
+def produceDinosaur(runCondition):
 
 	global tarX
 	global tarY
 
-	initBone()
-	tarX, tarY = measure()
-	worldSize = get_world_size()
-	cyclePath, cycleIndex = buildHamiltonianCycle(worldSize)
-	totalTiles = len(cyclePath)
-	body = [(get_pos_x(), get_pos_y())]
+	while (runCondition()):
+		initBone()
+		tarX, tarY = measure()
+		worldSize = get_world_size()
+		cyclePath, cycleIndex = buildHamiltonianCycle(worldSize)
+		totalTiles = len(cyclePath)
+		body = [(get_pos_x(), get_pos_y())]
+		
+		while True:
 	
-	while True:
-
-		direction = getBestSafeDirection(cycleIndex, totalTiles, worldSize, body)
-		if direction == None:
-			change_hat(Hats.Straw_Hat)
-			break
-			
-		if not moveAndCheck(direction, body):
-			change_hat(Hats.Wizard_Hat)
-			break
-	
-	#set_world_size(0)
-
-#produceBoneAsync()
+			direction = getBestSafeDirection(cycleIndex, totalTiles, worldSize, body)
+			if direction == None:
+				change_hat(Hats.Straw_Hat)
+				break
+				
+			if not moveAndCheck(direction, body):
+				change_hat(Hats.Straw_Hat)
+				break

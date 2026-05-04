@@ -1,5 +1,19 @@
 from H_Movement import *
 
+def runWorkers(worker, runCondition):
+	
+	drones = []		
+	
+	for i in range(max_drones() - 1):
+		spawned = spawn_drone(worker, i, runCondition)
+		if spawned:
+			drones.append(spawned)
+		
+	worker(max_drones() - 1, runCondition)
+				
+	for drone in drones:
+		wait_for(drone)
+
 def executeTaskByWorldIndex(function):
 	drones = []
 	

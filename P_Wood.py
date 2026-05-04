@@ -9,7 +9,6 @@ def collides(point):
 	return (x + y) % 1
 		
 def plantTree():
-	
 	viableCompanion = False
 	
 	while not viableCompanion:
@@ -28,7 +27,6 @@ def harvestPoint():
 	harvest()
 		
 def worker(id, runCondition):
-	
 	x, y = 0, id
 	
 	while (runCondition()):
@@ -40,16 +38,5 @@ def worker(id, runCondition):
 		x += 1
 
 def produceWood(runCondition):
-	
 	clear()
-	drones = []
-	
-	for i in range(max_drones() - 1):
-		spawned = spawn_drone(worker, i, runCondition)
-		if spawned:
-			drones.append(spawned)
-		
-	worker(max_drones() - 1, runCondition)
-				
-	for drone in drones:
-		wait_for(drone)
+	runWorkers(worker, runCondition)

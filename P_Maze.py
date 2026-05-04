@@ -10,7 +10,6 @@ delta = {North:(0,1), East:(1,0), South:(0,-1), West:(-1,0)}
 dirs = [North, East, South, West]
 
 iterationTarget = 300
-startTime = get_time()
 
 def manhattan(a, b):
 	dx = a[0] - b[0]
@@ -24,9 +23,7 @@ def manhattan(a, b):
 def astar(walls, start, goal):
 	if start == goal:
 		return []
-
-	# Dial's bucket queue: dict of f-score -> list of nodes,
-	# heads[f] tracks next unread index in buckets[f].
+		
 	buckets = {}
 	heads = {}
 	came_from = {}
@@ -99,7 +96,7 @@ def probe_and_record(walls):
 	}
 	return walls
 
-def worker(id):
+def worker(id, runCondition):
 	
 	x = (id % 4) * 8 + 4
 	y = (id // 4) * 8 + 4
@@ -109,6 +106,7 @@ def worker(id):
 	if (num_drones() < 16):
 		spawn_drone(worker, id+1)
 		
+	# delay to allow spawning drone to exit maze
 	for _ in range(3):
 		do_a_flip()
 
@@ -116,9 +114,9 @@ def worker(id):
 	substance = 8 * 2**(num_unlocked(Unlocks.Mazes) - 1)
 	use_item(Items.Weird_Substance, substance)
 	
-	solve(id)
+	solve(id, runCondition)
 
-def solve(id):
+def solve(id, runCondition):
 	wall = "Left"
 	searching = True
 	hug = hugSide[wall]
@@ -127,7 +125,6 @@ def solve(id):
 	startGold = num_items(Items.Gold)
 
 	#walls[(x, y)] = {N, E, S, W}
-	#walls[(x, y)] = {0, 1, 1, 0}
 	walls = {}
 	
 	startingPos = get_pos_x(), get_pos_y()
@@ -157,13 +154,7 @@ def solve(id):
 	
 	iterations = 0
 
-	while iterations <= iterationTarget:
-			
-#		if (id == 0):
-#			if (get_time() - startTime) % 60 < 3:
-#				endGold = num_items(Items.Gold)
-#				quick_print("Produced", endGold - startGold, "with", iterations, "iterations")
-#				startGold = endGold
+	while iterations <= iterationTarget and runCondition():
 	
 		target = measure()
 		start = get_pos_x(), get_pos_y()
@@ -180,17 +171,7 @@ def solve(id):
 			iterations += 1
 	
 
-def produceGoldAsync():
-
-	global startTime
-
-	starting = num_items(Items.Gold)
-	startTime = get_time()
-
+def produceMaze(runCondition):
 	clear()
-	resetPosition()
-	worker(0)
-
-	ending = num_items(Items.Gold)
-	runtime = get_time() - startTime	
-	quick_print("Produced", ending - starting, "in", runtime, "with", iterationTarget, "iterations")
+	while (runCondition()):
+		worker(0, runCondition)

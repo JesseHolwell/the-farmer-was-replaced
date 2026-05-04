@@ -34,16 +34,12 @@ def search(wall):
 			currentDir = hug[currentDir]
 			move(currentDir)
 
-def produceGoldAsync():
-	resetPosition()
-	if can_harvest() and get_entity_type() != Entities.Grass:
-		harvest()
-		
-	plant(Entities.Bush)
+def produceMaze(runCondition):
 	substance = get_world_size() * 2**(num_unlocked(Unlocks.Mazes) - 1)
-	use_item(Items.Weird_Substance, substance)
-	
-	spawn_drone(search, "Right")
-	search("Left")
-	
-produceGoldAsync()
+	clear()	
+	while (runCondition()):
+		plant(Entities.Bush)
+		use_item(Items.Weird_Substance, substance)
+		alt = spawn_drone(search, "Right")
+		search("Left")
+		wait_for(alt)

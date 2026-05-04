@@ -1,5 +1,5 @@
 from P_Maze import *
-from S__Benchmark import *
+from H_Benchmark import *
 	
-function = produceGoldAsync
+function = produceMaze
 benchmark(function)

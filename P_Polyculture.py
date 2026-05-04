@@ -37,30 +37,25 @@ def produceColumn(x, focusItem, isTreeFocus):
 				do_a_flip()
 		harvest()
 
-def producePolycultureAsync(focusItem):
+def producePolyculture(runCondition, focusItem):
 	clear()
-	resetPosition()
-	tillFieldAsync()
+	tillField()
 	drones = []		
 	isTreeFocus = focusItem == Entities.Tree
 
-	for x in range(get_world_size()):
-		spawned = False
-		while not spawned:
-			spawned = spawn_drone(produceColumn, x, focusItem, isTreeFocus)	
-			if spawned:
-				drones.append(spawned)
-			else:
-				produceColumn(x, focusItem, isTreeFocus)
-				spawned = True
-		
-	for drone in drones:
-		wait_for(drone)
-		
-def producePolyTrees():
-	producePolycultureAsync(Entities.Tree)	
-
-#runWithStats(producePolyTrees, Items.Wood)
+	while(runCondition()):
+		for x in range(get_world_size()):
+			spawned = False
+			while not spawned:
+				spawned = spawn_drone(produceColumn, x, focusItem, isTreeFocus)	
+				if spawned:
+					drones.append(spawned)
+				else:
+					produceColumn(x, focusItem, isTreeFocus)
+					spawned = True
+			
+		for drone in drones:
+			wait_for(drone)
 
 	
 	

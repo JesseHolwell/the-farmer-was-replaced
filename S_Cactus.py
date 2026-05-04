@@ -1,5 +1,5 @@
 from P_Cactus import *
-from S__Benchmark import *
+from H_Benchmark import *
 	
-function = produceCactusAsync
+function = produceCactus
 benchmark(function)

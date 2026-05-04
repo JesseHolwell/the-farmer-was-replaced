@@ -1,5 +1,5 @@
 from P_Carrots import *
-from S__Benchmark import *
+from H_Benchmark import *
 	
-function = produceCarrotsAsync
+function = produceCarrots
 benchmark(function)

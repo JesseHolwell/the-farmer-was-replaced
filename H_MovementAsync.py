@@ -1,7 +1,7 @@
 from H_Movement import *
 from H_Multithreading import *
 
-def tillFieldAsync():
+def tillField():
 	def tillColumn(x):
 		for y in range(get_world_size()):
 			goto(x, y)
