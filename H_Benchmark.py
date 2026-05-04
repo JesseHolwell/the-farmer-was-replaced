@@ -21,7 +21,7 @@ def benchmark(target, function):
 	totalItems = endItems - startItems
 	
 	inMinutes = totalTime / 60
-	perMinute = totalItems / 60
+	perMinute = totalItems / inMinutes
 			
 	quick_print(target, "produced", totalItems, "in", totalTime, "seconds")
-	quick_print("averaged", perMinute, "per minute")
+	quick_print("Averaged", perMinute, "per minute")
