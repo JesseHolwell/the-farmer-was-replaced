@@ -1,47 +1,60 @@
 from H_Movement import *
 
-#hay, wood, carrots
+def produceHaySingle(runCondition):
+	while (runCondition()):
+		harvest()
+		do_a_flip()
 
-def produceStarter(runCondition):
+def produceHayColumn(runCondition):
+	while (runCondition()):
+		harvest()
+		move(North)
+	
+def produceBushes(runCondition):
+	while (runCondition()):
+		harvest()
+		plant(Entities.Bush)
+		move(North)	
+
+def produceTriplet(runCondition):
 	clear()
 	
 	column1 = get_world_size() / 3
 	column2 = get_world_size() / 3 * 2
 	
 	while (runCondition()):
-		for x in range(2):
-			for i in range(get_world_size()):
-				for j in range(get_world_size()):
-					
-					if (i < column1):
-						if (get_ground_type() != Grounds.Grassland):
-							till()
-							
-						if (can_harvest()):
-							harvest()
-					elif (i < column2):
-						#if (get_ground_type() != Grounds.Grassland):
-							#till()
-							
-						if (can_harvest()):
-							harvest()
-		
-						if ((j + i) % 2 == 0):
-							plant(Entities.Tree)
-							#use_item(Items.Fertilizer)
-							
-						else:
-							plant(Entities.Bush)
+		for i in range(get_world_size()):
+			for j in range(get_world_size()):
+				
+				if (i < column1):
+					if (get_ground_type() != Grounds.Grassland):
+						till()
+						
+					if (can_harvest()):
+						harvest()
+				elif (i < column2):
+					#if (get_ground_type() != Grounds.Grassland):
+						#till()
+						
+					if (can_harvest()):
+						harvest()
+	
+					if ((j + i) % 2 == 0):
+						plant(Entities.Tree)
+						#use_item(Items.Fertilizer)
 						
 					else:
-						if (get_ground_type() == Grounds.Grassland):
-							till()
-						
-						if (can_harvest()):
-							harvest()
-							
-						plant(Entities.Carrot)
-	
+						plant(Entities.Bush)
 					
-					move(North)
-				move(East)	
+				else:
+					if (get_ground_type() == Grounds.Grassland):
+						till()
+					
+					if (can_harvest()):
+						harvest()
+						
+					plant(Entities.Carrot)
+
+				
+				move(North)
+			move(East)	
