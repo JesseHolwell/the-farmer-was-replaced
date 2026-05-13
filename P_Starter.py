@@ -2,18 +2,22 @@ from H_Movement import *
 
 def produceHaySingle(runCondition):
 	while (runCondition()):
+		while not can_harvest():
+			t = 0
 		harvest()
-		do_a_flip()
 
 def produceHayColumn(runCondition):
 	while (runCondition()):
+		while not can_harvest():
+			t = 0
 		harvest()
 		move(North)
 	
 def produceBushes(runCondition):
 	while (runCondition()):
-		harvest()
-		plant(Entities.Bush)
+		if (get_entity_type() != Entities.Bush or can_harvest()):
+			harvest()
+			plant(Entities.Bush)
 		move(North)	
 
 def produceTriplet(runCondition):
@@ -33,28 +37,28 @@ def produceTriplet(runCondition):
 					if (can_harvest()):
 						harvest()
 				elif (i < column2):
-					#if (get_ground_type() != Grounds.Grassland):
-						#till()
-						
+					if num_unlocked(Unlocks.Trees) > 0:
+						woodPlant = Entities.Tree
+					else:
+						woodPlant = Entities.Bush
 					if (can_harvest()):
 						harvest()
-	
-					if ((j + i) % 2 == 0):
-						plant(Entities.Tree)
-						#use_item(Items.Fertilizer)
-						
-					else:
-						plant(Entities.Bush)
-					
+						plant(woodPlant)
+					elif (get_entity_type() != woodPlant):
+						plant(woodPlant)
+
 				else:
 					if (get_ground_type() == Grounds.Grassland):
 						till()
-					
+
 					if (can_harvest()):
 						harvest()
-						
-					plant(Entities.Carrot)
+						if (num_items(Items.Wood) > 0 and num_items(Items.Hay) > 0):
+							plant(Entities.Carrot)
+					elif (get_entity_type() != Entities.Carrot):
+						if (num_items(Items.Wood) > 0 and num_items(Items.Hay) > 0):
+							plant(Entities.Carrot)
 
 				
-				move(North)
-			move(East)	
+				move(East)
+			move(North)	

@@ -14,5 +14,5 @@ leaderboardMap = {
 	Leaderboards.Dinosaur: "L_Dinosaur",
 	Leaderboards.Maze: "L_Maze",
 	Leaderboards.Maze_Single: "L_MazeSingle",
-	Leaderboards.Fastest_Reset: "L_Full"
+	Leaderboards.Fastest_Reset: "L_FastestReset"
 }

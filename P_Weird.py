@@ -62,22 +62,17 @@ def harvestPoint(point):
 	use_item(Items.Fertilizer)
 	harvest()
 		
-def worker(id, timeBased):
-	
+def worker(id, runCondition):
 	x, y = getPoint(id)
 	goto(x, y)
 	till()
-	
+
 	map = {}
-	
+
 	map = plantCompanionAtPoint((x, y), map)
 	goto(x, y)
-	
-	startTime = None
-	if (timeBased):
-		startTime = get_time()
-	
-	while (runCondition(startTime)):
+
+	while (runCondition()):
 		harvestPoint((x, y))
 		map = plantCompanionAtPoint((x, y), map)
 

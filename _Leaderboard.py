@@ -1,5 +1,5 @@
 from H_Leaderboards import *
 
-leaderboard = Leaderboards.Wood
+leaderboard = Leaderboards.Fastest_Reset
 
-leaderboard_run(leaderboard, leaderboardMap[leaderboard], 1000000000)
+leaderboard_run(leaderboard, leaderboardMap[leaderboard], 100000)
