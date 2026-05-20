@@ -43,10 +43,17 @@ def plantCompanionAtPoint(point, map):
 
 		nextItem, (x2, y2) = companion
 
+		attempts = 0
 		while (collides((x2, y2), points)):
 			till()
 			till()
-			nextItem, (x2, y2) = get_companion()
+			companion = get_companion()
+			if companion == None:
+				return map
+			nextItem, (x2, y2) = companion
+			attempts += 1
+			if attempts > 16:
+				return map
 			
 		if ((x2, y2) not in map or map[(x2, y2)] != nextItem):
 			goto(x2, y2)
@@ -60,7 +67,7 @@ def harvestPoint(point):
 	goto(x, y)
 	
 	while not can_harvest():
-		if get_water() < 0.90:
+		if get_water() < 0.90 and num_items(Items.Water) > num_drones():
 			use_item(Items.Water)
 	harvest()
 		

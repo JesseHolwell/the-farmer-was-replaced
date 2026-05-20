@@ -36,8 +36,15 @@ def ensureItems(cost):
 		target_amount = cost[item]
 		while num_items(item) < target_amount:
 			shortfall = target_amount - num_items(item)
-			if item in perPlantSeedCost:
-				ensureItems(scaleCost(perPlantSeedCost[item], shortfall))
+			if item in perPlantSeedEntity:
+				seedCost = get_cost(perPlantSeedEntity[item])
+				if seedCost:
+					safeCost = {}
+					for k in seedCost:
+						if k != item:
+							safeCost[k] = seedCost[k]
+					if safeCost:
+						ensureItems(scaleCost(safeCost, shortfall))
 			producer = selectProducer(item)
 			before = num_items(item)
 			producer(makeItemRunCondition(item, target_amount))

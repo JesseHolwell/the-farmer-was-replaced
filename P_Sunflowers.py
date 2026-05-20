@@ -9,8 +9,11 @@ def produceSunflowersColumn(x):
 		plantSunflower()
 		if (measure() == 15):
 			while get_water() < 0.75:
-				use_item(Items.Water)
-	
+				if num_items(Items.Water) > num_drones():
+					use_item(Items.Water)
+				else:
+					do_a_flip()
+
 def harvestSunflowersColumn(x, size):
 	for y in range(get_world_size()):
 		goto(x, y)
@@ -18,9 +21,9 @@ def harvestSunflowersColumn(x, size):
 			# this is gross im tired
 			if not can_harvest():
 				while not can_harvest():
-					if get_water() < 0.75:
+					if get_water() < 0.75 and num_items(Items.Water) > num_drones():
 						use_item(Items.Water)
-						
+
 			harvest()
 			
 def harvestSunflowersColumnTask(index):

@@ -1,8 +1,9 @@
 from H_Movement import *
 from H_MovementAsync import *
 from H_SmartPlanting import *
+from P_Pumpkins import *
 
-def workerColumn(x):
+def workerColumn(x, runCondition = None):
 	sizeMap = {}
 	for y in range(get_world_size()):
 		goto(x, y)
@@ -27,7 +28,7 @@ def workerColumn(x):
 		if not swapped:
 			break
 				
-def workerRow(y):
+def workerRow(y, runCondition = None):
 	sizeMap = {}
 	for x in range(get_world_size()):
 		goto(x, y)
@@ -54,6 +55,22 @@ def workerRow(y):
 def produceCactus(runCondition):
 	clear()
 	while (runCondition()):
+		ws = get_world_size()
+		seedCost = get_cost(Entities.Cactus)
+		if seedCost:
+			for seedItem in seedCost:
+				if seedItem == Items.Cactus:
+					continue
+				needed = seedCost[seedItem] * ws * ws
+				if num_items(seedItem) < needed:
+					if seedItem == Items.Pumpkin:
+						def needPumpkin():
+							return num_items(Items.Pumpkin) < needed
+						producePumpkins(needPumpkin)
+						clear()
+		before = num_items(Items.Cactus)
 		runWorkers(workerColumn, None)
 		runWorkers(workerRow, None)
 		harvest()
+		if num_items(Items.Cactus) <= before:
+			return

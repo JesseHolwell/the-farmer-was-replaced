@@ -17,12 +17,10 @@ initialMap = {
 	Unlocks.Carrots:produceTriplet
 }
 
-perPlantSeedCost = {
-	Items.Hay:{},
-	Items.Wood:{},
-	Items.Carrot:get_cost(Entities.Carrot),
-	Items.Pumpkin:get_cost(Entities.Pumpkin),
-	Items.Weird_Substance:{},
+perPlantSeedEntity = {
+	Items.Carrot:Entities.Carrot,
+	Items.Pumpkin:Entities.Pumpkin,
+	Items.Cactus:Entities.Cactus,
 }
 
 def noProducer(runCondition):

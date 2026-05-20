@@ -2,6 +2,7 @@
 
 from H_Movement import *
 from H_MovementAsync import *
+from P_Cactus import *
 
 def initBone():
 	#set_world_size(10)
@@ -169,20 +170,40 @@ def produceDinosaur(runCondition):
 	global tarY
 
 	while (runCondition()):
-		initBone()
-		tarX, tarY = measure()
+		beforeBones = num_items(Items.Bone)
 		worldSize = get_world_size()
+		threshold = worldSize * worldSize
+		if num_items(Items.Cactus) < threshold:
+			def needCactus():
+				return num_items(Items.Cactus) < threshold * 2
+			produceCactus(needCactus)
+
+		initBone()
+		target = measure()
+		if target == None:
+			change_hat(Hats.Straw_Hat)
+			if num_items(Items.Bone) <= beforeBones:
+				return
+			continue
+		tarX, tarY = target
 		cyclePath, cycleIndex = buildHamiltonianCycle(worldSize)
 		totalTiles = len(cyclePath)
 		body = [(get_pos_x(), get_pos_y())]
 		
 		while True:
-	
+
 			direction = getBestSafeDirection(cycleIndex, totalTiles, worldSize, body)
 			if direction == None:
 				change_hat(Hats.Straw_Hat)
 				break
-				
+
 			if not moveAndCheck(direction, body):
 				change_hat(Hats.Straw_Hat)
 				break
+
+			if num_items(Items.Cactus) <= 0 and get_entity_type() != Entities.Apple:
+				change_hat(Hats.Straw_Hat)
+				break
+
+		if num_items(Items.Bone) <= beforeBones:
+			return

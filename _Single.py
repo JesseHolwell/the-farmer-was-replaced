@@ -1,6 +1,6 @@
 from H_Orchestration import *
 
-focusItem = Items.Bone
+focusItem = Items.Weird_Substance
 
 while True:
 	produce(focusItem)()	

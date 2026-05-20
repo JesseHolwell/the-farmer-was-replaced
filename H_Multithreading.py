@@ -1,16 +1,27 @@
 from H_Movement import *
 
 def runWorkers(worker, runCondition):
-	
-	drones = []		
-	
-	for i in range(max_drones() - 1):
-		spawned = spawn_drone(worker, i, runCondition)
+	n = max_drones()
+	ws = get_world_size()
+	sliceSize = (ws + n - 1) // n
+
+	def runSlice(droneId, runCondition):
+		start = droneId * sliceSize
+		end = min(start + sliceSize, ws)
+		for id in range(start, end):
+			if runCondition != None and not runCondition():
+				return
+			worker(id, runCondition)
+
+	drones = []
+
+	for i in range(n - 1):
+		spawned = spawn_drone(runSlice, i, runCondition)
 		if spawned:
 			drones.append(spawned)
-		
-	worker(max_drones() - 1, runCondition)
-				
+
+	runSlice(n - 1, runCondition)
+
 	for drone in drones:
 		wait_for(drone)
 

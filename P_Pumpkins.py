@@ -2,37 +2,54 @@ from H_Movement import *
 from H_MovementAsync import *
 from H_Multithreading import *
 
-def worker(x, runCondition):
-	pumpkins = []
-	pumpkinCount = 0
-	for y in range(get_world_size()):
-		pumpkins.append(0)
-		
-	while pumpkinCount != get_world_size():	
-		for y in range(len(pumpkins)):
-				
-			if (pumpkins[y] == 1):
+def plantPumpkinColumn(x, runCondition):
+	ws = get_world_size()
+	for y in range(ws):
+		if num_items(Items.Carrot) <= num_drones():
+			return
+		goto(x, y)
+		entity = get_entity_type()
+		if entity == None or entity == Entities.Dead_Pumpkin:
+			plant(Entities.Pumpkin)
+
+def harvestPumpkinColumn(x, runCondition):
+	ws = get_world_size()
+	done = []
+	for y in range(ws):
+		done.append(False)
+
+	doneCount = 0
+	while doneCount < ws:
+		if not runCondition():
+			return
+		for y in range(ws):
+			if done[y]:
 				continue
-			
 			goto(x, y)
-				
-			if (get_ground_type() == Grounds.Grassland):
-				till()
-			
-			if (can_harvest()):
-				pumpkins[y] = 1
-				pumpkinCount += 1
-			else:
+			if can_harvest():
+				harvest()
+				done[y] = True
+				doneCount += 1
+				continue
+			entity = get_entity_type()
+			if entity == None or entity == Entities.Dead_Pumpkin:
+				if num_items(Items.Carrot) <= num_drones():
+					done[y] = True
+					doneCount += 1
+					continue
 				plant(Entities.Pumpkin)
-				
-				if (pumpkinCount > get_world_size() / 2):
+			else:
+				if get_water() < 0.5 and num_items(Items.Water) > num_drones():
 					use_item(Items.Water)
-		
-			if pumpkinCount == get_world_size():
-				break
-	
+
 def producePumpkins(runCondition):
 	clear()
-	while (runCondition()):
-		runWorkers(worker, runCondition)
-		harvest()
+	tillField()
+	while runCondition():
+		if num_items(Items.Carrot) <= num_drones():
+			return
+		before = num_items(Items.Pumpkin)
+		runWorkers(plantPumpkinColumn, runCondition)
+		runWorkers(harvestPumpkinColumn, runCondition)
+		if num_items(Items.Pumpkin) <= before:
+			return

@@ -43,11 +43,18 @@ def plantCompanionAtPoint(point, map):
 
 		nextItem, (x2, y2) = companion
 
+		attempts = 0
 		while (collides((x2, y2), points)):
 			till()
 			till()
-			nextItem, (x2, y2) = get_companion()
-			
+			companion = get_companion()
+			if companion == None:
+				return map
+			nextItem, (x2, y2) = companion
+			attempts += 1
+			if attempts > 16:
+				return map
+
 		if ((x2, y2) not in map or map[(x2, y2)] != nextItem):
 			goto(x2, y2)
 			plantItem(nextItem)()
@@ -58,8 +65,9 @@ def plantCompanionAtPoint(point, map):
 def harvestPoint(point):
 	x, y = point
 	goto(x, y)
-	
-	use_item(Items.Fertilizer)
+
+	if num_items(Items.Fertilizer) > 0:
+		use_item(Items.Fertilizer)
 	harvest()
 		
 def worker(id, runCondition):
@@ -72,14 +80,37 @@ def worker(id, runCondition):
 	map = plantCompanionAtPoint((x, y), map)
 	goto(x, y)
 
+	iterations = 0
+	stuckCount = 0
+	lastWeird = num_items(Items.Weird_Substance)
+
 	while (runCondition()):
 		harvestPoint((x, y))
 		map = plantCompanionAtPoint((x, y), map)
+		iterations += 1
+
+		if iterations % 50 == 0:
+			currentWeird = num_items(Items.Weird_Substance)
+			quick_print("weird worker", id, "iter", iterations, "weird", currentWeird, "fert", num_items(Items.Fertilizer))
+			if currentWeird <= lastWeird:
+				stuckCount += 1
+				if stuckCount >= 4:
+					quick_print("weird worker", id, "no global progress in 200 iters, bailing")
+					return
+			else:
+				stuckCount = 0
+				lastWeird = currentWeird
+
+		if iterations > 2000:
+			quick_print("weird worker", id, "hit iter cap, bailing")
+			return
 
 def produceWeird(runCondition):
+	quick_print("produceWeird start: weird =", num_items(Items.Weird_Substance), "fert =", num_items(Items.Fertilizer), "drones =", num_drones())
 	clear()
 	tillField()
 	runWorkers(worker, runCondition)
+	quick_print("produceWeird done: weird =", num_items(Items.Weird_Substance))
 
 	
 	

@@ -1,6 +1,7 @@
 # What if we solve 16 mazes at once
 
 from H_Movement import *
+from P_Weird import *
 
 right_of = {North:East, East:South, South:West, West:North}
 left_of = {North:West, West:South, South:East, East:North}
@@ -104,7 +105,7 @@ def worker(id, runCondition):
 	goto(x, y)
 	
 	if (num_drones() < 16):
-		spawn_drone(worker, id+1)
+		spawn_drone(worker, id+1, runCondition)
 		
 	# delay to allow spawning drone to exit maze
 	for _ in range(3):
@@ -112,8 +113,14 @@ def worker(id, runCondition):
 
 	plant(Entities.Bush)
 	substance = 8 * 2**(num_unlocked(Unlocks.Mazes) - 1)
+	if num_items(Items.Weird_Substance) < substance:
+		return
 	use_item(Items.Weird_Substance, substance)
-	
+
+	entity = get_entity_type()
+	if entity != Entities.Hedge and entity != Entities.Treasure:
+		return
+
 	solve(id, runCondition)
 
 def solve(id, runCondition):
@@ -155,8 +162,10 @@ def solve(id, runCondition):
 	iterations = 0
 
 	while iterations <= iterationTarget and runCondition():
-	
+
 		target = measure()
+		if target == None:
+			return
 		start = get_pos_x(), get_pos_y()
 
 		path = astar(walls, start, target)
@@ -167,11 +176,22 @@ def solve(id, runCondition):
 
 		if get_entity_type() == Entities.Treasure:
 			substance = 8 * 2**(num_unlocked(Unlocks.Mazes) - 1)
+			if num_items(Items.Weird_Substance) < substance * num_drones():
+				harvest()
+				return
 			use_item(Items.Weird_Substance, substance)
 			iterations += 1
 	
 
 def produceMaze(runCondition):
 	clear()
-	while (runCondition()):
+	while runCondition():
+		substance = 8 * 2**(num_unlocked(Unlocks.Mazes) - 1)
+		minReserve = substance * num_drones()
+		threshold = substance * num_drones() * 4
+		if num_items(Items.Weird_Substance) < minReserve:
+			def needMoreWeird():
+				return num_items(Items.Weird_Substance) < threshold
+			produceWeird(needMoreWeird)
+			clear()
 		worker(0, runCondition)

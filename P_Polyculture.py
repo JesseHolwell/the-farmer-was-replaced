@@ -32,7 +32,7 @@ def produceColumn(x, focusItem, isTreeFocus):
 		goto(x, y)
 		if get_entity_type() != None:
 			while get_entity_type() != None and not can_harvest():
-				if (get_water() < 0.75):
+				if get_water() < 0.75 and num_items(Items.Water) > num_drones():
 					use_item(Items.Water)
 				do_a_flip()
 		harvest()
